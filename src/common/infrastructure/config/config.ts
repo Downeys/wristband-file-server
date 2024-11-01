@@ -11,6 +11,7 @@ interface RawEnvVars {
     webmContainer: string | undefined;
     photoSubmissionUrl: string | undefined;
     musicSubmissionUrl: string | undefined;
+    mongoDbUri: string | undefined;
 }
 
 interface BlobProps {
@@ -23,8 +24,13 @@ interface BlobProps {
     musicSubmissionUrl: string;
 }
 
+interface MongoDbProps {
+    uri: string;
+}
+
 interface Config {
     blob: BlobProps;
+    mongoDb: MongoDbProps;
 }
 
 const envVars: RawEnvVars = {
@@ -34,7 +40,8 @@ const envVars: RawEnvVars = {
     mp3Container: process.env.MP3_CONTAINER,
     webmContainer: process.env.WEBM_CONTAINER,
     photoSubmissionUrl: process.env.PHOTO_SUBMISSION_URL,
-    musicSubmissionUrl: process.env.MUSIC_SUBMISSION_URL
+    musicSubmissionUrl: process.env.MUSIC_SUBMISSION_URL,
+    mongoDbUri: process.env.MONGO_DB_URI
 }
 
 const getSanatizedConfig = (c: RawEnvVars): Config => {
@@ -54,8 +61,13 @@ const getSanatizedConfig = (c: RawEnvVars): Config => {
         musicSubmissionUrl: c.musicSubmissionUrl ?? ''
     }
 
+    const mongoDb: MongoDbProps = {
+        uri: c.mongoDbUri ?? ''
+    }
+
     return {
-        blob
+        blob,
+        mongoDb
     }
 }
 
