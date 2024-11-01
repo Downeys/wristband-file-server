@@ -1,9 +1,10 @@
-import { BlobServiceClient } from "@azure/storage-blob";
+import { BlobDownloadResponseParsed, BlobServiceClient } from "@azure/storage-blob";
 import logging from '../logging/logging';
 import config from '../config/config';
 import { generateBlobName, getFileBuffer, streamToBuffer } from "../utils/helpers/fileHelpers";
 import { BlobFetchingService } from "../../../streaming/application/interfaces/infrastructureContracts";
 import { BlobSubmissionService } from "../../../submissions/application/interfaces/infrastructureContracts";
+import { INTERNAL_SERVER_ERROR } from "../constants/exceptionMessages";
 
 const NAMESPACE = 'blob-service';
 const {
@@ -22,24 +23,33 @@ const uploadFile = async (file: File, container: string, baseUrl: string): Promi
     const containerClient = blobServiceClient.getContainerClient(container);
     const blobName = generateBlobName(file);
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-    const buffer = await getFileBuffer(file);
-    const uploadBlobResponse = await blockBlobClient.upload(buffer, buffer.byteLength);
-    logging.info(NAMESPACE, `Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}`);
+    try {
+        const buffer = await getFileBuffer(file);
+        const uploadBlobResponse = await blockBlobClient.upload(buffer, buffer.byteLength);
+        logging.info(NAMESPACE, `Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}`);
+    } catch (e:  any) {
+        logging.info(NAMESPACE, `Blob failed to upload. blobName: ${blobName}`);
+        throw new Error(INTERNAL_SERVER_ERROR)
+    }
     const fileUrl = baseUrl + blobName;
     return fileUrl
 }
 
-const fetchFile = async (fileName: string, container: string): Promise<Buffer | null> => {
+const fetchFile = async (fileName: string, container: string): Promise<Buffer> => {
     const containerClient = blobServiceClient.getContainerClient(container);
     const blobClient = containerClient.getBlobClient(fileName);
-    const downloadBlockBlobResponse = await blobClient.download();
-    if (!downloadBlockBlobResponse){
-        console.log(`Failed to fetch file. Unable to instantiate blob client. Filename: ${fileName}`);
-        return null;
+    try {
+        const downloadBlockBlobResponse = await blobClient.download();
+        if (!downloadBlockBlobResponse){
+            throw new Error(`Blob response is null or undefined. Blob response: ${JSON.stringify(downloadBlockBlobResponse)}`)
+        }
+        const downloaded = await streamToBuffer(downloadBlockBlobResponse.readableStreamBody!);
+        console.log("Downloaded blob content:", downloaded);
+        return downloaded;
+    } catch (e: any) {
+        console.log(`Failed to fetch file. Unable to instantiate blob client. Filename: ${fileName} - Error: ${e.message}`);
+        throw new Error(INTERNAL_SERVER_ERROR);
     }
-    const downloaded = await streamToBuffer(downloadBlockBlobResponse.readableStreamBody!);
-    console.log("Downloaded blob content:", downloaded);
-    return downloaded;
 }
 
 const persistPhotoSubmission = async (photo: File): Promise<string> => {
