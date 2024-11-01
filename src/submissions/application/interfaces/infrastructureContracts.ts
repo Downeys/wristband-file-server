@@ -6,5 +6,5 @@ export interface BlobSubmissionService {
 }
 
 export interface MusicSubmissionRepo {
-    persistMusicSubmission: (musicSubmission: MusicSubmission) => Promise<boolean>
+    persistMusicSubmission: (musicSubmission: MusicSubmission) => Promise<string>
 }
