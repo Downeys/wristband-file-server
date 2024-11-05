@@ -72,8 +72,8 @@ const fetchWebmFile = async (fileName: string): Promise<Buffer | null> => {
     return await fetchFile(fileName, webmContainer)
 }
 
-export const FetchingService: BlobFetchingService = { fetchMp3File, fetchWebmFile }
+export const blobFetchingService: BlobFetchingService = { fetchMp3File, fetchWebmFile }
 
-export const SubmissionService: BlobSubmissionService = { persistPhotoSubmission, persistSongSubmission }
+export const blobSubmissionService: BlobSubmissionService = { persistPhotoSubmission, persistSongSubmission }
 
 export default { persistPhotoSubmission, persistSongSubmission, fetchMp3File, fetchWebmFile }

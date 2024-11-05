@@ -1,15 +1,17 @@
 import express, { Request, Response, NextFunction } from 'express';
 import logging from './common/infrastructure/logging/logging';
 import config from './common/presentation/config/config';
+import submissionRoutes from './submissions/presentation/routes/musicSubmissionRoutes';
+import { INTERNAL_SERVER_ERROR } from './common/infrastructure/constants/exceptionMessages';
 
 const NAMESPACE = "index"
 
 const app = express();
 
 // error handler
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-    logging.error(NAMESPACE, err.stack)
-    res.status(500).send('Server errer: ' + err.message)
+app.use((e: any, req: Request, res: Response, next: NextFunction) => {
+    logging.error(NAMESPACE, e.stack)
+    res.status(500).send(`${INTERNAL_SERVER_ERROR} ${e.message}`)
 })
 
 // logging
@@ -30,9 +32,8 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello from TypeScript Node.js server!');
-});
+// routes
+app.use('/submit', submissionRoutes);
 
 app.listen(config.server.port, () => {
   console.log(`Server listening on port ${config.server.port}`);
