@@ -1,4 +1,4 @@
 export interface BlobFetchingService {
-    fetchMp3File: (fileName: string) => Promise<Buffer | null>;
-    fetchWebmFile: (fileName: string) => Promise<Buffer | null>;
+    fetchMp3File: (fileName: string) => Promise<string>;
+    fetchWebmFile: (fileName: string) => Promise<string>;
 }
