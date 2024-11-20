@@ -40,8 +40,9 @@ const uploadFile = async (file: File, container: string, baseUrl: string): Promi
 }
 
 const fetchFile = async (fileName: string, container: string): Promise<string> => {
+    console.log(`Fetching file ${fileName}.`);
     const containerClient = blobServiceClient.getContainerClient(container);
-    const blobClient = containerClient.getBlobClient(fileName);
+    const blobClient = containerClient.getBlockBlobClient(fileName);
     const savePath = path.join(ASSETS_PATH, fileName)
     if (existsSync(savePath)) {
         console.log(`Returning cached file from ${savePath}.`);
@@ -50,13 +51,13 @@ const fetchFile = async (fileName: string, container: string): Promise<string> =
     try {
         const downloadResponse = await blobClient.downloadToFile(savePath);
         if (!downloadResponse){
-            console.log(`Blob response is null or undefined. Blob response: ${JSON.stringify(downloadResponse)}`);
+            console.log(`Blob response is null or undefined`);
             throw new Error(INTERNAL_SERVER_ERROR)
         }
-        console.log(`Downloaded blob content: ${JSON.stringify(downloadResponse)}`);
+        console.log(`Downloaded blob content`);
         return savePath;
     } catch (e: any) {
-        console.log(`Failed to fetch file. Unable to instantiate blob client. Filename: ${fileName} - Error: ${e.message}`);
+        console.log(`Failed to fetch file. Filename: ${fileName} - Error: ${e.message}`);
         throw new Error(INTERNAL_SERVER_ERROR);
     }
 }
@@ -73,13 +74,13 @@ const persistSongSubmission = async (song: File): Promise<string> => {
 
 const fetchMp3File = async (fileName: string): Promise<string> => {
     logging.info(NAMESPACE, `Fetching mp3 file. Filename: ${fileName}`);
-    const mp3FileName = fileName + '.mp3';
+    const mp3FileName = fileName.trim() + '.mp3';
     return await fetchFile(mp3FileName, mp3Container)
 }
 
 const fetchWebmFile = async (fileName: string): Promise<string> => {
     logging.info(NAMESPACE, `Fetching webm file. Filename: ${fileName}`);
-    const webmFileName = fileName + '.webm';
+    const webmFileName = fileName.trim() + '.webm';
     return await fetchFile(webmFileName, webmContainer)
 }
 

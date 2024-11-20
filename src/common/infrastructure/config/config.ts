@@ -56,7 +56,7 @@ const getSanatizedConfig = (c: RawEnvVars): Config => {
         photoSubmissionContainer: c.photoSubmissionContainer ?? '',   
         musicSubmissionContainer: c.musicSubmissionContainer ?? '',
         mp3Container: c.mp3Container ?? '',
-        webmContainer: c.mp3Container ?? '',
+        webmContainer: c.webmContainer ?? '',
         photoSubmissionUrl: c.photoSubmissionUrl ?? '',
         musicSubmissionUrl: c.musicSubmissionUrl ?? ''
     }

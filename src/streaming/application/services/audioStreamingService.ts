@@ -4,6 +4,7 @@ import logging from "../../../common/infrastructure/logging/logging";
 import { blobFetchingService } from "../../../common/infrastructure/services/blobService";
 import { CHUNK_SIZE } from "../constants/fileConstants";
 import { ContentType, CONTENT_TYPE_HEADER } from "../constants/headerConstants";
+import { OutgoingHttpHeaders } from "node:http2";
 
 const NAMESPACE = 'audio-streaming-service';
 
@@ -45,7 +46,7 @@ const getResponseHeaders = (start: number, end: number, audioSize: number, fileT
     const contentType = CONTENT_TYPE_HEADER[fileType];
 
     // set headers for transfer to client
-    const headers = {
+    const headers: OutgoingHttpHeaders = {
         "Content-Range": `bytes ${start}-${end}/${audioSize}`,
         "Accept-Ranges": "bytes",
         "Content-Length": contentLength,
@@ -53,7 +54,7 @@ const getResponseHeaders = (start: number, end: number, audioSize: number, fileT
         "Transfer-Encoding": "chunked",
     };
 
-    return { headers, start, end };
+    return headers;
 }
 
 export const audioStreamingService: AudioStreamingService = { streamMp3File, streamWebmFile };

@@ -16,7 +16,7 @@ interface Config {
 }
 
 const envVars: RawEnvVars = {
-    port: process.env.DB_URI
+    port: process.env.PORT
 }
 
 const getSanatizedConfig = (c: RawEnvVars): Config => {
