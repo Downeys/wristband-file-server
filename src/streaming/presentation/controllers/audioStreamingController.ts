@@ -16,11 +16,11 @@ const getMp3AudioStream = async (req: Request, res: Response, next: NextFunction
         stream.pipe(res);
     } catch (e: any) {
         if (e.message === "Not allowed") {
-            res.send(401).json({
+            res.sendStatus(401).json({
                 message: e.message
             });
         } else {
-            res.send(500).json({
+            res.sendStatus(500).json({
                 message: e.message
             })
         }
@@ -38,11 +38,11 @@ const getWebmAudioStream = async (req: Request, res: Response, next: NextFunctio
         stream.pipe(res);
     } catch (e: any) {
         if (e.message === "Not allowed") {
-            res.send(401).json({
+            res.sendStatus(401).json({
                 message: e.message
             });
         } else {
-            res.send(500).json({
+            res.sendStatus(500).json({
                 message: e.message
             })
         }
