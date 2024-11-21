@@ -3,6 +3,7 @@ import logging from '../../../common/infrastructure/logging/logging';
 import { MusicSubmission } from '../../application/interfaces/modelInterfaces';
 import musicSubmissionService from '../../application/services/musicSubmissionService';
 import { MusicSubmissionController } from '../../application/interfaces/presentationInterfaces';
+import { NOT_ALLOWED } from '../../../common/presentation/constants/exceptionMessages';
 
 const NAMESPACE = 'music-submission-controller';
 
@@ -23,14 +24,12 @@ const createMusicSubmission = async (req: Request, res: Response, next: NextFunc
             result: submission.submissionId
         });
     } catch (e: any) {
-        if (e.message === "Not allowed") {
-            res.send(401).json({
-                message: e.message
-            });
+        if (e.message === NOT_ALLOWED) {
+            res.statusMessage = e.message;
+            res.sendStatus(401);
         } else {
-            res.send(500).json({
-                message: e.message
-            })
+            res.statusMessage = e.message;
+            res.sendStatus(500);
         }
     }
 

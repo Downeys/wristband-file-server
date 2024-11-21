@@ -40,24 +40,24 @@ const uploadFile = async (file: File, container: string, baseUrl: string): Promi
 }
 
 const fetchFile = async (fileName: string, container: string): Promise<string> => {
-    console.log(`Fetching file ${fileName}.`);
+    logging.info(NAMESPACE, `Fetching file ${fileName}.`);
     const containerClient = blobServiceClient.getContainerClient(container);
     const blobClient = containerClient.getBlockBlobClient(fileName);
     const savePath = path.join(ASSETS_PATH, fileName)
     if (existsSync(savePath)) {
-        console.log(`Returning cached file from ${savePath}.`);
+        logging.info(NAMESPACE, `Returning cached file from ${savePath}.`);
         return savePath;
     }
     try {
         const downloadResponse = await blobClient.downloadToFile(savePath);
         if (!downloadResponse){
-            console.log(`Blob response is null or undefined`);
+            logging.error(NAMESPACE, `Blob response is null or undefined`);
             throw new Error(INTERNAL_SERVER_ERROR)
         }
-        console.log(`Downloaded blob content`);
+        logging.info(NAMESPACE, `Downloaded blob content`);
         return savePath;
     } catch (e: any) {
-        console.log(`Failed to fetch file. Filename: ${fileName} - Error: ${e.message}`);
+        logging.error(NAMESPACE, `Failed to fetch file. Filename: ${fileName} - Error: ${e.message}`);
         throw new Error(INTERNAL_SERVER_ERROR);
     }
 }

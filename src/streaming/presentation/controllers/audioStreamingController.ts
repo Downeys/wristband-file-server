@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import logging from '../../../common/infrastructure/logging/logging';
 import audioStreamingService from '../../application/services/audioStreamingService';
 import { AudioStreamingController } from '../../application/interfaces/presentationInterfaces';
+import { NOT_ALLOWED } from '../../../common/presentation/constants/exceptionMessages';
 
 const NAMESPACE = 'audio-streaming-controller';
 
@@ -15,14 +16,12 @@ const getMp3AudioStream = async (req: Request, res: Response, next: NextFunction
         res.writeHead(206, headers);
         stream.pipe(res);
     } catch (e: any) {
-        if (e.message === "Not allowed") {
-            res.sendStatus(401).json({
-                message: e.message
-            });
+        if (e.message === NOT_ALLOWED) {
+            res.statusMessage = e.message;
+            res.sendStatus(401);
         } else {
-            res.sendStatus(500).json({
-                message: e.message
-            })
+            res.statusMessage = e.message;
+            res.sendStatus(500);
         }
     }
 }
@@ -37,14 +36,12 @@ const getWebmAudioStream = async (req: Request, res: Response, next: NextFunctio
         res.writeHead(206, headers);
         stream.pipe(res);
     } catch (e: any) {
-        if (e.message === "Not allowed") {
-            res.sendStatus(401).json({
-                message: e.message
-            });
+        if (e.message === NOT_ALLOWED) {
+            res.statusMessage = e.message;
+            res.sendStatus(401);
         } else {
-            res.sendStatus(500).json({
-                message: e.message
-            })
+            res.statusMessage = e.message;
+            res.sendStatus(500);
         }
     }
 }
