@@ -131,3 +131,6 @@ dist
 
 #local file cache
 assets
+
+#docker
+Dockerfile.local
