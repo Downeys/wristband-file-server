@@ -6,9 +6,8 @@ const NAMESPACE = 'health-check-controller';
 
 const ping = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     logging.info(NAMESPACE, 'Health check endpoint engaged');
-    res.send(200).json({
-        result: 'pong'
-    })
+    res.statusMessage = 'pong';
+    res.sendStatus(200)
 }
 
 export const audioStreamingController: HealthCheckController = { ping };

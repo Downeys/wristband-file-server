@@ -35,7 +35,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 
 // routes
-app.use('healthcheck', healthCheckRoutes);
+app.use('/healthcheck', healthCheckRoutes);
 app.use('/submit', submissionRoutes);
 app.use('/audio-stream', streamingRoutes);
 

@@ -18,5 +18,7 @@ COPY package-lock.json package-lock.json
 RUN npm ci
  
 COPY . .
- 
+RUN mkdir /app/assets
+
+EXPOSE 8080
 CMD [ "npm", "run", "start" ]
