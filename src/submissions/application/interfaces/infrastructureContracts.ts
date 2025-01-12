@@ -1,4 +1,4 @@
-import { MusicSubmission } from "./modelInterfaces";
+import { MusicSubmission } from './modelInterfaces';
 
 export interface BlobSubmissionService {
     persistPhotoSubmission: (photo: File) => Promise<string>;
@@ -6,5 +6,5 @@ export interface BlobSubmissionService {
 }
 
 export interface MusicSubmissionRepo {
-    persistMusicSubmission: (musicSubmission: MusicSubmission) => Promise<string>
+    persistMusicSubmission: (musicSubmission: MusicSubmission) => Promise<string>;
 }

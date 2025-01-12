@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import logging from '../../../common/infrastructure/logging/logging';
 import { MusicSubmission } from '../../application/interfaces/modelInterfaces';
 import musicSubmissionService from '../../application/services/musicSubmissionService';
@@ -7,7 +7,7 @@ import { NOT_ALLOWED } from '../../../common/presentation/constants/exceptionMes
 
 const NAMESPACE = 'music-submission-controller';
 
-const createMusicSubmission = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const createMusicSubmission = async (req: Request, res: Response): Promise<void> => {
     logging.info(NAMESPACE, 'Music submission received');
     if (!req.files) {
         logging.error(NAMESPACE, 'Failed to submit music. Files missing from request.');
@@ -21,19 +21,19 @@ const createMusicSubmission = async (req: Request, res: Response, next: NextFunc
     try {
         const submission = await musicSubmissionService.handleMusicSubmissionUpload(musicSubmission, imageFiles, audioFiles);
         res.send(200).json({
-            result: submission.submissionId
+            result: submission.submissionId,
         });
-    } catch (e: any) {
-        if (e.message === NOT_ALLOWED) {
-            res.statusMessage = e.message;
+    } catch (e: unknown) {
+        const error = e as Error;
+        if (error.message === NOT_ALLOWED) {
+            res.statusMessage = error.message;
             res.sendStatus(401);
         } else {
-            res.statusMessage = e.message;
+            res.statusMessage = error.message;
             res.sendStatus(500);
         }
     }
-
-}
+};
 
 export const musicSubmissionController: MusicSubmissionController = { createMusicSubmission };
 

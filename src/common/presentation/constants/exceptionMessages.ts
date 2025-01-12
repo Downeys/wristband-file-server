@@ -1,1 +1,1 @@
-export const NOT_ALLOWED = "Not Allowed";
+export const NOT_ALLOWED = 'Not Allowed';
