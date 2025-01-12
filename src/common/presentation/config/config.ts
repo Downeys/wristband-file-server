@@ -16,8 +16,8 @@ interface Config {
 }
 
 const envVars: RawEnvVars = {
-    port: process.env.PORT
-}
+    port: process.env.PORT,
+};
 
 const getSanatizedConfig = (c: RawEnvVars): Config => {
     for (const [key, value] of Object.entries(c)) {
@@ -27,12 +27,12 @@ const getSanatizedConfig = (c: RawEnvVars): Config => {
     }
 
     const server: ServerProps = {
-        port: c.port ? +c.port : DEFAULT_PORT
-    }
+        port: c.port ? +c.port : DEFAULT_PORT,
+    };
 
     return {
-        server
-    }
-}
+        server,
+    };
+};
 
 export default getSanatizedConfig(envVars);

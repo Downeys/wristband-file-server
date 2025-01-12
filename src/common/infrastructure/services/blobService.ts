@@ -1,25 +1,18 @@
-import { BlobServiceClient } from "@azure/storage-blob";
-import path from "node:path";
-import { existsSync } from "node:fs";
+import { BlobServiceClient } from '@azure/storage-blob';
+import path from 'node:path';
+import { existsSync } from 'node:fs';
 import logging from '../logging/logging';
 import config from '../config/config';
-import { generateBlobName, getFileBuffer } from "../utils/helpers/fileHelpers";
-import { BlobFetchingService } from "../../../streaming/application/interfaces/infrastructureContracts";
-import { BlobSubmissionService } from "../../../submissions/application/interfaces/infrastructureContracts";
-import { INTERNAL_SERVER_ERROR } from "../constants/exceptionMessages";
-import { ASSETS_PATH } from "../constants/blobConstants";
+import { generateBlobName, getFileBuffer } from '../utils/helpers/fileHelpers';
+import { BlobFetchingService } from '../../../streaming/application/interfaces/infrastructureContracts';
+import { BlobSubmissionService } from '../../../submissions/application/interfaces/infrastructureContracts';
+import { INTERNAL_SERVER_ERROR } from '../constants/exceptionMessages';
+import { ASSETS_PATH } from '../constants/blobConstants';
 
 const NAMESPACE = 'blob-service';
 
-const {
-    connectionString,
-    photoSubmissionUrl,
-    musicSubmissionUrl,
-    photoSubmissionContainer,
-    musicSubmissionContainer,
-    mp3Container,
-    webmContainer
-} = config.blob;
+const { connectionString, photoSubmissionUrl, musicSubmissionUrl, photoSubmissionContainer, musicSubmissionContainer, mp3Container, webmContainer } =
+    config.blob;
 
 const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
 
@@ -31,36 +24,38 @@ const uploadFile = async (file: File, container: string, baseUrl: string): Promi
         const buffer = await getFileBuffer(file);
         const uploadBlobResponse = await blockBlobClient.upload(buffer, buffer.byteLength);
         logging.info(NAMESPACE, `Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}`);
-    } catch (e:  any) {
-        logging.info(NAMESPACE, `Blob failed to upload. blobName: ${blobName}`);
-        throw new Error(INTERNAL_SERVER_ERROR)
+    } catch (e) {
+        const error = e as Error;
+        logging.info(NAMESPACE, `Blob failed to upload. blobName: ${blobName}. error: ${error.message}`);
+        throw new Error(INTERNAL_SERVER_ERROR);
     }
     const fileUrl = baseUrl + blobName;
-    return fileUrl
-}
+    return fileUrl;
+};
 
 const fetchFile = async (fileName: string, container: string): Promise<string> => {
     logging.info(NAMESPACE, `Fetching file ${fileName}.`);
     const containerClient = blobServiceClient.getContainerClient(container);
     const blobClient = containerClient.getBlockBlobClient(fileName);
-    const savePath = path.join(ASSETS_PATH, fileName)
+    const savePath = path.join(ASSETS_PATH, fileName);
     if (existsSync(savePath)) {
         logging.info(NAMESPACE, `Returning cached file from ${savePath}.`);
         return savePath;
     }
     try {
         const downloadResponse = await blobClient.downloadToFile(savePath);
-        if (!downloadResponse){
+        if (!downloadResponse) {
             logging.error(NAMESPACE, `Blob response is null or undefined`);
-            throw new Error(INTERNAL_SERVER_ERROR)
+            throw new Error(INTERNAL_SERVER_ERROR);
         }
         logging.info(NAMESPACE, `Downloaded blob content`);
         return savePath;
-    } catch (e: any) {
-        logging.error(NAMESPACE, `Failed to fetch file. Filename: ${fileName} - Error: ${e.message}`);
+    } catch (e: unknown) {
+        const error = e as Error;
+        logging.error(NAMESPACE, `Failed to fetch file. Filename: ${fileName} - Error: ${error.message}`);
         throw new Error(INTERNAL_SERVER_ERROR);
     }
-}
+};
 
 const persistPhotoSubmission = async (photo: File): Promise<string> => {
     logging.info(NAMESPACE, `Uploading album art. FileName: ${photo.name}`);
@@ -75,17 +70,28 @@ const persistSongSubmission = async (song: File): Promise<string> => {
 const fetchMp3File = async (fileName: string): Promise<string> => {
     logging.info(NAMESPACE, `Fetching mp3 file. Filename: ${fileName}`);
     const mp3FileName = fileName.trim() + '.mp3';
-    return await fetchFile(mp3FileName, mp3Container)
-}
+    return await fetchFile(mp3FileName, mp3Container);
+};
 
 const fetchWebmFile = async (fileName: string): Promise<string> => {
     logging.info(NAMESPACE, `Fetching webm file. Filename: ${fileName}`);
     const webmFileName = fileName.trim() + '.webm';
-    return await fetchFile(webmFileName, webmContainer)
-}
+    return await fetchFile(webmFileName, webmContainer);
+};
 
-export const blobFetchingService: BlobFetchingService = { fetchMp3File, fetchWebmFile }
+export const blobFetchingService: BlobFetchingService = {
+    fetchMp3File,
+    fetchWebmFile,
+};
 
-export const blobSubmissionService: BlobSubmissionService = { persistPhotoSubmission, persistSongSubmission }
+export const blobSubmissionService: BlobSubmissionService = {
+    persistPhotoSubmission,
+    persistSongSubmission,
+};
 
-export default { persistPhotoSubmission, persistSongSubmission, fetchMp3File, fetchWebmFile }
+export default {
+    persistPhotoSubmission,
+    persistSongSubmission,
+    fetchMp3File,
+    fetchWebmFile,
+};

@@ -1,7 +1,8 @@
-import { ReadStream } from "node:fs";
+import { ReadStream } from 'node:fs';
+import { OutgoingHttpHeaders } from 'node:http2';
 
 export interface StreamAudioFileResponse {
-    headers: Record<string, any>;
+    headers: OutgoingHttpHeaders;
     stream: ReadStream;
 }
 

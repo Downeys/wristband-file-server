@@ -6,4 +6,3 @@ const router = express.Router();
 router.get('/ping', healthCheckController.ping);
 
 export default router;
-

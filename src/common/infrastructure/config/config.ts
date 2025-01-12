@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import { DEFAULT_PORT } from '../../presentation/constants/serverConstants';
 
 dotenv.config();
 
@@ -41,8 +40,8 @@ const envVars: RawEnvVars = {
     webmContainer: process.env.WEBM_CONTAINER,
     photoSubmissionUrl: process.env.PHOTO_SUBMISSION_URL,
     musicSubmissionUrl: process.env.MUSIC_SUBMISSION_URL,
-    mongoDbUri: process.env.MONGO_DB_URI
-}
+    mongoDbUri: process.env.MONGO_DB_URI,
+};
 
 const getSanatizedConfig = (c: RawEnvVars): Config => {
     for (const [key, value] of Object.entries(c)) {
@@ -53,22 +52,22 @@ const getSanatizedConfig = (c: RawEnvVars): Config => {
 
     const blob: BlobProps = {
         connectionString: c.blobConnectionString ?? '',
-        photoSubmissionContainer: c.photoSubmissionContainer ?? '',   
+        photoSubmissionContainer: c.photoSubmissionContainer ?? '',
         musicSubmissionContainer: c.musicSubmissionContainer ?? '',
         mp3Container: c.mp3Container ?? '',
         webmContainer: c.webmContainer ?? '',
         photoSubmissionUrl: c.photoSubmissionUrl ?? '',
-        musicSubmissionUrl: c.musicSubmissionUrl ?? ''
-    }
+        musicSubmissionUrl: c.musicSubmissionUrl ?? '',
+    };
 
     const mongoDb: MongoDbProps = {
-        uri: c.mongoDbUri ?? ''
-    }
+        uri: c.mongoDbUri ?? '',
+    };
 
     return {
         blob,
-        mongoDb
-    }
-}
+        mongoDb,
+    };
+};
 
 export default getSanatizedConfig(envVars);
