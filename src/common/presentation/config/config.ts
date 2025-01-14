@@ -3,7 +3,7 @@ import { DEFAULT_PORT } from '../constants/serverConstants';
 
 dotenv.config();
 
-interface RawEnvVars {
+export interface RawEnvVars {
     port: string | undefined;
 }
 
@@ -19,7 +19,7 @@ const envVars: RawEnvVars = {
     port: process.env.PORT,
 };
 
-const getSanatizedConfig = (c: RawEnvVars): Config => {
+export const getSanatizedConfig = (c: RawEnvVars): Config => {
     for (const [key, value] of Object.entries(c)) {
         if (value === undefined) {
             throw new Error(`Missing key ${key} in config.env`);

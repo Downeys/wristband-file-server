@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-interface RawEnvVars {
+export interface RawEnvVars {
     blobConnectionString: string | undefined;
     photoSubmissionContainer: string | undefined;
     musicSubmissionContainer: string | undefined;
@@ -43,7 +43,7 @@ const envVars: RawEnvVars = {
     mongoDbUri: process.env.MONGO_DB_URI,
 };
 
-const getSanatizedConfig = (c: RawEnvVars): Config => {
+export const getSanatizedConfig = (c: RawEnvVars): Config => {
     for (const [key, value] of Object.entries(c)) {
         if (value === undefined) {
             throw new Error(`Missing key ${key} in config.env`);
@@ -51,17 +51,17 @@ const getSanatizedConfig = (c: RawEnvVars): Config => {
     }
 
     const blob: BlobProps = {
-        connectionString: c.blobConnectionString ?? '',
-        photoSubmissionContainer: c.photoSubmissionContainer ?? '',
-        musicSubmissionContainer: c.musicSubmissionContainer ?? '',
-        mp3Container: c.mp3Container ?? '',
-        webmContainer: c.webmContainer ?? '',
-        photoSubmissionUrl: c.photoSubmissionUrl ?? '',
-        musicSubmissionUrl: c.musicSubmissionUrl ?? '',
+        connectionString: c.blobConnectionString!,
+        photoSubmissionContainer: c.photoSubmissionContainer!,
+        musicSubmissionContainer: c.musicSubmissionContainer!,
+        mp3Container: c.mp3Container!,
+        webmContainer: c.webmContainer!,
+        photoSubmissionUrl: c.photoSubmissionUrl!,
+        musicSubmissionUrl: c.musicSubmissionUrl!,
     };
 
     const mongoDb: MongoDbProps = {
-        uri: c.mongoDbUri ?? '',
+        uri: c.mongoDbUri!,
     };
 
     return {
