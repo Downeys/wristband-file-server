@@ -90,8 +90,6 @@ export const blobSubmissionService: BlobSubmissionService = {
 };
 
 export default {
-    persistPhotoSubmission,
-    persistSongSubmission,
-    fetchMp3File,
-    fetchWebmFile,
+    blobFetchingService,
+    blobSubmissionService,
 };

@@ -5,11 +5,13 @@ const getMockFile = (name: string, size: number, type: string) => {
     return new File([blob], name);
 };
 
+// TODO: test negative scenarios
+
 describe('fileHelper tests: tests helper methods used by blob service', () => {
     it('should return the photo filename with a uuid tacked onto the front of it', () => {
         // Arrange
         const mockFileName = 'testPhoto.png';
-        const mockPhoto = getMockFile('testPhoto.png', 1111, 'image/png');
+        const mockPhoto = getMockFile(mockFileName, 1111, 'image/png');
 
         //Act
         const result = generateBlobName(mockPhoto);
@@ -21,9 +23,8 @@ describe('fileHelper tests: tests helper methods used by blob service', () => {
     });
     it('should return photo file buffer', async () => {
         // Arrange
-        const mockFileName = 'testPhoto.png';
         const mockPhoto: File = getMockFile('testPhoto.png', 1111, 'image/png');
-        const t = mockPhoto.type;
+
         //Act
         const result = await getFileBuffer(mockPhoto);
 
