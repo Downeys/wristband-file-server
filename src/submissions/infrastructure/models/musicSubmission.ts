@@ -38,3 +38,4 @@ const musicSubmissionSchema = new Schema<MusicSubmissionSchema>(
 );
 
 export const MusicSubmission = models.MusicSubmission || model<MusicSubmissionSchema>('MusicSubmission', musicSubmissionSchema);
+export default MusicSubmission;
