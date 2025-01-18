@@ -8,7 +8,7 @@ import { OutgoingHttpHeaders } from 'node:http2';
 
 const NAMESPACE = 'audio-streaming-service';
 
-const streamMp3File = async (fileName: string, rangeHeader: string): Promise<StreamAudioFileResponse> => {
+const streamMp3File = async (fileName: string, rangeHeader?: string): Promise<StreamAudioFileResponse> => {
     logging.info(NAMESPACE, `Fetching file: ${fileName}`);
     const filePath = await blobFetchingService.fetchMp3File(fileName); // path to audio file
 
@@ -19,7 +19,7 @@ const streamMp3File = async (fileName: string, rangeHeader: string): Promise<Str
     return { headers, stream };
 };
 
-const streamWebmFile = async (fileName: string, rangeHeader: string): Promise<StreamAudioFileResponse> => {
+const streamWebmFile = async (fileName: string, rangeHeader?: string): Promise<StreamAudioFileResponse> => {
     logging.info(NAMESPACE, `Fetching file: ${fileName}`);
     const filePath = await blobFetchingService.fetchWebmFile(fileName); // path to audio file
 
@@ -30,9 +30,9 @@ const streamWebmFile = async (fileName: string, rangeHeader: string): Promise<St
     return { headers, stream };
 };
 
-const getAudioChunkDetails = (filePath: string, rangeHeader: string = '') => {
+const getAudioChunkDetails = (filePath: string, rangeHeader: string = '0') => {
     // send audio in chunks
-    const range = rangeHeader || '0';
+    const range = rangeHeader;
     const audioSize = statSync(filePath).size; // get audio size
 
     // define start and end of current chunk
@@ -44,14 +44,6 @@ const getAudioChunkDetails = (filePath: string, rangeHeader: string = '') => {
 const getResponseHeaders = (start: number, end: number, audioSize: number, fileType: ContentType) => {
     const contentLength = end - start + 1;
     const contentType = CONTENT_TYPE_HEADER[fileType];
-
-    // set headers for transfer to client
-    // const headers: OutgoingHttpHeader[] = [];
-    // headers.push(`Content-Range: bytes ${start}-${end}/${audioSize}`);
-    // headers.push('Accept-Ranges: bytes');
-    // headers.push(`Content-Length: ${contentLength}`);
-    // headers.push(`Content-Type: ${contentType}`);
-    // headers.push('Transfer-Encoding: chunked');
 
     const headers: OutgoingHttpHeaders = {
         'Content-Range': `bytes ${start}-${end}/${audioSize}`,
@@ -66,4 +58,4 @@ const getResponseHeaders = (start: number, end: number, audioSize: number, fileT
 
 export const audioStreamingService: AudioStreamingService = { streamMp3File, streamWebmFile };
 
-export default { streamMp3File, streamWebmFile };
+export default audioStreamingService;
