@@ -13,7 +13,7 @@ describe('Audio streaming service test', () => {
         // Arrange
         const fileName = 'testFileName';
         const rangeHeader = '1500';
-        const mockFecthMp3File = jest.fn().mockImplementation(() => 'testMp3Path');
+        const mockFecthMp3File = jest.fn().mockImplementation(() => ({ filePath: 'testMp3Path' }));
         blobService.blobFetchingService.fetchMp3File = mockFecthMp3File;
 
         // Act
@@ -42,7 +42,7 @@ describe('Audio streaming service test', () => {
         // Arrange
         const fileName = 'testFileName';
         const rangeHeader = '1500';
-        const mockFecthWebmFile = jest.fn().mockImplementation(() => 'testWebmPath');
+        const mockFecthWebmFile = jest.fn().mockImplementation(() => ({ filePath: 'testWebmPath' }));
         blobService.blobFetchingService.fetchWebmFile = mockFecthWebmFile;
 
         // Act

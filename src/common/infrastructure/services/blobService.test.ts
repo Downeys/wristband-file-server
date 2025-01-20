@@ -49,25 +49,25 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
         it('should fetch mp3 if the file does not already exist in local storage', async () => {
             // Arrange
             const testInput = 'validFileName';
-            const expectedOutput = path.join(ASSETS_PATH, 'validFileName.mp3');
+            const expectedOutput = { filePath: path.join(ASSETS_PATH, 'validFileName.mp3') };
 
             // Act
             const result = await blobFetchingService.fetchMp3File(testInput);
 
             // Assert
-            expect(result).toBe(expectedOutput);
-            expect(mockDownloadToFile).toHaveBeenCalledWith(expectedOutput);
+            expect(result.filePath).toBe(expectedOutput.filePath);
+            expect(mockDownloadToFile).toHaveBeenCalledWith(expectedOutput.filePath);
         });
         it('should not fetch mp3 if file does already exist in local storage', async () => {
             // Arrange
             const testInput = 'fileAlreadyExists';
-            const expectedOutput = path.join(ASSETS_PATH, 'fileAlreadyExists.mp3');
+            const expectedOutput = { filePath: path.join(ASSETS_PATH, 'fileAlreadyExists.mp3') };
 
             // Act
             const result = await blobFetchingService.fetchMp3File(testInput);
 
             // Assert
-            expect(result).toBe(expectedOutput);
+            expect(result.filePath).toBe(expectedOutput.filePath);
             expect(mockDownloadToFile).not.toHaveBeenCalled();
         });
         it('should throw exception if there the mp3 fails to download from the external server', async () => {
@@ -81,25 +81,25 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
         it('should fetch webm if the file does not already exist in local storage', async () => {
             // Arrange
             const testInput = 'validFileName';
-            const expectedOutput = path.join(ASSETS_PATH, 'validFileName.webm');
+            const expectedOutput = { filePath: path.join(ASSETS_PATH, 'validFileName.webm') };
 
             // Act
             const result = await blobFetchingService.fetchWebmFile(testInput);
 
             // Assert
-            expect(result).toBe(expectedOutput);
-            expect(mockDownloadToFile).toHaveBeenCalledWith(expectedOutput);
+            expect(result.filePath).toBe(expectedOutput.filePath);
+            expect(mockDownloadToFile).toHaveBeenCalledWith(expectedOutput.filePath);
         });
         it('should not fetch webm if file does already exist in local storage', async () => {
             // Arrange
             const testInput = 'fileAlreadyExists';
-            const expectedOutput = path.join(ASSETS_PATH, 'fileAlreadyExists.webm');
+            const expectedOutput = { filePath: path.join(ASSETS_PATH, 'fileAlreadyExists.webm') };
 
             // Act
             const result = await blobFetchingService.fetchWebmFile(testInput);
 
             // Assert
-            expect(result).toBe(expectedOutput);
+            expect(result.filePath).toBe(expectedOutput.filePath);
             expect(mockDownloadToFile).not.toHaveBeenCalled();
         });
         it('should throw exception if there the webm fails to download from the external server', async () => {
@@ -115,13 +115,13 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
         it('should return storage url if photo upload is successful', async () => {
             // Arrange
             const testInput = { name: 'testFileName', arrayBuffer: jest.fn() } as unknown as File;
-            const expectedOutput = config.blob.photoSubmissionUrl + 'testFileName';
+            const expectedOutput = { fileUrl: config.blob.photoSubmissionUrl + 'testFileName' };
 
             // Act
             const result = await blobSubmissionService.persistPhotoSubmission(testInput);
 
             // Assert
-            expect(result).toBe(expectedOutput);
+            expect(result.fileUrl).toBe(expectedOutput.fileUrl);
         });
         it('should throw exception if photo upload fails', async () => {
             // Arrange
@@ -134,13 +134,13 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
         it('should return storage url if song upload is successful', async () => {
             // Arrange
             const testInput = { name: 'testFileName', arrayBuffer: jest.fn() } as unknown as File;
-            const expectedOutput = config.blob.musicSubmissionUrl + 'testFileName';
+            const expectedOutput = { fileUrl: config.blob.musicSubmissionUrl + 'testFileName' };
 
             // Act
             const result = await blobSubmissionService.persistSongSubmission(testInput);
 
             // Assert
-            expect(result).toBe(expectedOutput);
+            expect(result.fileUrl).toBe(expectedOutput.fileUrl);
         });
         it('should throw exception if song upload fails', async () => {
             // Arrange

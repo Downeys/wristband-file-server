@@ -10,7 +10,7 @@ const NAMESPACE = 'audio-streaming-service';
 
 const streamMp3File = async (fileName: string, rangeHeader?: string): Promise<StreamAudioFileResponse> => {
     logging.info(NAMESPACE, `Fetching file: ${fileName}`);
-    const filePath = await blobFetchingService.fetchMp3File(fileName); // path to audio file
+    const { filePath } = await blobFetchingService.fetchMp3File(fileName); // path to audio file
 
     const { start, end, audioSize } = getAudioChunkDetails(filePath, rangeHeader);
     const headers = getResponseHeaders(start, end, audioSize, ContentType.mp3);
@@ -21,7 +21,7 @@ const streamMp3File = async (fileName: string, rangeHeader?: string): Promise<St
 
 const streamWebmFile = async (fileName: string, rangeHeader?: string): Promise<StreamAudioFileResponse> => {
     logging.info(NAMESPACE, `Fetching file: ${fileName}`);
-    const filePath = await blobFetchingService.fetchWebmFile(fileName); // path to audio file
+    const { filePath } = await blobFetchingService.fetchWebmFile(fileName); // path to audio file
 
     const { start, end, audioSize } = getAudioChunkDetails(filePath, rangeHeader);
     const headers = getResponseHeaders(start, end, audioSize, ContentType.webm);

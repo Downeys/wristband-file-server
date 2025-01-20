@@ -20,21 +20,21 @@ export const handleMusicSubmissionUpload = async (
 };
 
 const saveImages = async (images: File[]): Promise<string[]> => {
-    const imageLinks: string[] = [];
+    const imageUrls: string[] = [];
     for (let i = 0; i < images.length; i++) {
-        const link = await blobSubmissionService.persistPhotoSubmission(images[i]);
-        imageLinks.push(link);
+        const { fileUrl } = await blobSubmissionService.persistPhotoSubmission(images[i]);
+        imageUrls.push(fileUrl);
     }
-    return imageLinks;
+    return imageUrls;
 };
 
 const saveSongs = async (songs: File[]): Promise<string[]> => {
-    const songLinks: string[] = [];
+    const songUrls: string[] = [];
     for (let i = 0; i < songs.length; i++) {
-        const link = await blobSubmissionService.persistSongSubmission(songs[i]);
-        songLinks.push(link);
+        const { fileUrl } = await blobSubmissionService.persistSongSubmission(songs[i]);
+        songUrls.push(fileUrl);
     }
-    return songLinks;
+    return songUrls;
 };
 
 export const musicSubmissionService: MusicSubmissionService = { handleMusicSubmissionUpload };

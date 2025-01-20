@@ -6,9 +6,10 @@ describe('Healthcheck endpoints', () => {
         // Arrange
         const req = getMockReq();
         const { res } = getMockRes();
+        const mockNext = jest.fn();
 
         // Act
-        await healthCheckController.ping(req, res);
+        await healthCheckController.ping(req, res, mockNext);
 
         // Assert
         expect(res.statusMessage).toBe('pong');

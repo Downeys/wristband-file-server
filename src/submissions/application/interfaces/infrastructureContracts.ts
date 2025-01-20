@@ -1,8 +1,12 @@
 import { MusicSubmission } from './modelInterfaces';
 
+export interface UploadFileResponse {
+    fileUrl: string;
+}
+
 export interface BlobSubmissionService {
-    persistPhotoSubmission: (photo: File) => Promise<string>;
-    persistSongSubmission: (song: File) => Promise<string>;
+    persistPhotoSubmission: (photo: File) => Promise<UploadFileResponse>;
+    persistSongSubmission: (song: File) => Promise<UploadFileResponse>;
 }
 
 export interface MusicSubmissionRepo {
