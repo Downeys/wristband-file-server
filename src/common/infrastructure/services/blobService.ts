@@ -4,8 +4,8 @@ import { existsSync } from 'node:fs';
 import logging from '../logging/logging';
 import config from '../config/config';
 import { generateBlobName, getFileBuffer } from '../utils/helpers/fileHelpers';
-import { BlobFetchingService } from '../../../streaming/application/interfaces/infrastructureContracts';
-import { BlobSubmissionService } from '../../../submissions/application/interfaces/infrastructureContracts';
+import { BlobFetchingService, FetchFileResponse } from '../../../streaming/application/interfaces/infrastructureContracts';
+import { BlobSubmissionService, UploadFileResponse } from '../../../submissions/application/interfaces/infrastructureContracts';
 import { INTERNAL_SERVER_ERROR } from '../constants/exceptionMessages';
 import { ASSETS_PATH } from '../constants/blobConstants';
 
@@ -16,7 +16,7 @@ const { connectionString, photoSubmissionUrl, musicSubmissionUrl, photoSubmissio
 
 const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
 
-const uploadFile = async (file: File, container: string, baseUrl: string): Promise<string> => {
+const uploadFile = async (file: File, container: string, baseUrl: string): Promise<UploadFileResponse> => {
     const containerClient = blobServiceClient.getContainerClient(container);
     const blobName = generateBlobName(file);
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
@@ -30,17 +30,17 @@ const uploadFile = async (file: File, container: string, baseUrl: string): Promi
         throw new Error(INTERNAL_SERVER_ERROR);
     }
     const fileUrl = baseUrl + blobName;
-    return fileUrl;
+    return { fileUrl };
 };
 
-const fetchFile = async (fileName: string, container: string): Promise<string> => {
+const fetchFile = async (fileName: string, container: string): Promise<FetchFileResponse> => {
     logging.info(NAMESPACE, `Fetching file ${fileName}.`);
     const containerClient = blobServiceClient.getContainerClient(container);
     const blobClient = containerClient.getBlockBlobClient(fileName);
     const savePath = path.join(ASSETS_PATH, fileName);
     if (existsSync(savePath)) {
         logging.info(NAMESPACE, `Returning cached file from ${savePath}.`);
-        return savePath;
+        return { filePath: savePath };
     }
     try {
         const downloadResponse = await blobClient.downloadToFile(savePath);
@@ -49,7 +49,7 @@ const fetchFile = async (fileName: string, container: string): Promise<string> =
             throw new Error(INTERNAL_SERVER_ERROR);
         }
         logging.info(NAMESPACE, `Downloaded blob content`);
-        return savePath;
+        return { filePath: savePath };
     } catch (e: unknown) {
         const error = e as Error;
         logging.error(NAMESPACE, `Failed to fetch file. Filename: ${fileName} - Error: ${error.message}`);
@@ -57,23 +57,23 @@ const fetchFile = async (fileName: string, container: string): Promise<string> =
     }
 };
 
-const persistPhotoSubmission = async (photo: File): Promise<string> => {
+const persistPhotoSubmission = async (photo: File): Promise<UploadFileResponse> => {
     logging.info(NAMESPACE, `Uploading album art. FileName: ${photo.name}`);
     return await uploadFile(photo, photoSubmissionContainer, photoSubmissionUrl);
 };
 
-const persistSongSubmission = async (song: File): Promise<string> => {
+const persistSongSubmission = async (song: File): Promise<UploadFileResponse> => {
     logging.info(NAMESPACE, `Uploading song. Filename: ${song.name}`);
     return await uploadFile(song, musicSubmissionContainer, musicSubmissionUrl);
 };
 
-const fetchMp3File = async (fileName: string): Promise<string> => {
+const fetchMp3File = async (fileName: string): Promise<FetchFileResponse> => {
     logging.info(NAMESPACE, `Fetching mp3 file. Filename: ${fileName}`);
     const mp3FileName = fileName.trim() + '.mp3';
     return await fetchFile(mp3FileName, mp3Container);
 };
 
-const fetchWebmFile = async (fileName: string): Promise<string> => {
+const fetchWebmFile = async (fileName: string): Promise<FetchFileResponse> => {
     logging.info(NAMESPACE, `Fetching webm file. Filename: ${fileName}`);
     const webmFileName = fileName.trim() + '.webm';
     return await fetchFile(webmFileName, webmContainer);
