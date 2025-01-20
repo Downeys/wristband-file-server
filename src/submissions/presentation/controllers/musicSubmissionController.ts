@@ -3,6 +3,7 @@ import logging from '../../../common/infrastructure/logging/logging';
 import { MusicSubmission } from '../../application/interfaces/modelInterfaces';
 import musicSubmissionService from '../../application/services/musicSubmissionService';
 import { MusicSubmissionController } from '../../application/interfaces/presentationInterfaces';
+import asyncErrorHandler from '../../../common/presentation/errors/asyncErrorHandler';
 
 const NAMESPACE = 'music-submission-controller';
 
@@ -21,8 +22,9 @@ const createMusicSubmission = async (req: Request, res: Response, next: NextFunc
     res.send(200).json({
         result: submission.submissionId,
     });
-    next();
 };
 
-export const musicSubmissionController: MusicSubmissionController = { createMusicSubmission };
+export const musicSubmissionController: MusicSubmissionController = {
+    createMusicSubmission: asyncErrorHandler(createMusicSubmission),
+};
 export default musicSubmissionController;
