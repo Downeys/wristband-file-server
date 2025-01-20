@@ -6,8 +6,8 @@ import config from '../config/config';
 import { generateBlobName, getFileBuffer } from '../utils/helpers/fileHelpers';
 import { BlobFetchingService, FetchFileResponse } from '../../../streaming/application/interfaces/infrastructureContracts';
 import { BlobSubmissionService, UploadFileResponse } from '../../../submissions/application/interfaces/infrastructureContracts';
-import { INTERNAL_SERVER_ERROR } from '../constants/exceptionMessages';
 import { ASSETS_PATH } from '../constants/blobConstants';
+import BlobStorageError from '../errors/BlobStorageError';
 
 const NAMESPACE = 'blob-service';
 
@@ -25,9 +25,8 @@ const uploadFile = async (file: File, container: string, baseUrl: string): Promi
         const uploadBlobResponse = await blockBlobClient.upload(buffer, buffer.byteLength);
         logging.info(NAMESPACE, `Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}`);
     } catch (e) {
-        const error = e as Error;
-        logging.info(NAMESPACE, `Blob failed to upload. blobName: ${blobName}. error: ${error.message}`);
-        throw new Error(INTERNAL_SERVER_ERROR);
+        const err = e as Error;
+        throw new BlobStorageError(err.message);
     }
     const fileUrl = baseUrl + blobName;
     return { fileUrl };
@@ -45,15 +44,12 @@ const fetchFile = async (fileName: string, container: string): Promise<FetchFile
     try {
         const downloadResponse = await blobClient.downloadToFile(savePath);
         if (!downloadResponse) {
-            logging.error(NAMESPACE, `Blob response is null or undefined`);
-            throw new Error(INTERNAL_SERVER_ERROR);
+            throw new BlobStorageError(`Blob response is null or undefined`);
         }
-        logging.info(NAMESPACE, `Downloaded blob content`);
         return { filePath: savePath };
     } catch (e: unknown) {
-        const error = e as Error;
-        logging.error(NAMESPACE, `Failed to fetch file. Filename: ${fileName} - Error: ${error.message}`);
-        throw new Error(INTERNAL_SERVER_ERROR);
+        const err = e as Error;
+        throw new BlobStorageError(err.message);
     }
 };
 
