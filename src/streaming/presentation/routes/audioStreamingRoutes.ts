@@ -3,7 +3,7 @@ import { audioStreamingController } from '../controllers/audioStreamingControlle
 
 const router = express.Router();
 
-router.get('/mp3/:fileName/', audioStreamingController.getMp3AudioStream);
-router.get('/webm/:fileName/', audioStreamingController.getWebmAudioStream);
+router.get('/mp3/:fileId/', audioStreamingController.getMp3AudioStream);
+router.get('/webm/:fileId/', audioStreamingController.getWebmAudioStream);
 
 export default router;

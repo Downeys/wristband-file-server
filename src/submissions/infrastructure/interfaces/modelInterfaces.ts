@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongoose';
-import { MusicSubmission } from '../../application/interfaces/modelInterfaces';
+import { MusicSubmissionDto } from '../../application/interfaces/modelInterfaces';
 
-export interface MusicSubmissionSchema extends MusicSubmission, Document {
+export interface MusicSubmissionSchema extends MusicSubmissionDto, Document {
     id: ObjectId;
 }

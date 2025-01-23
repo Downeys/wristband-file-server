@@ -38,6 +38,36 @@ describe('Audio streaming service test', () => {
         expect(async () => await audioStreamingService.streamMp3File(fileName, rangeHeader)).rejects.toThrow('this is a mock failure');
     });
 
+    it('should throw exception if fileName input is null', async () => {
+        // Arrange
+        const fileName = null;
+        const rangeHeader = '1500';
+        const mockFecthMp3File = jest.fn().mockImplementation(() => {
+            throw Error('this is a mock failure');
+        });
+        blobService.blobFetchingService.fetchMp3File = mockFecthMp3File;
+
+        // Act
+        // Assert
+        expect(async () => await audioStreamingService.streamMp3File(fileName!, rangeHeader)).rejects.toThrow(
+            'fileName cannot be null or undefined.'
+        );
+    });
+
+    it('should throw exception if fileName input is an empty string', async () => {
+        // Arrange
+        const fileName = '';
+        const rangeHeader = '1500';
+        const mockFecthMp3File = jest.fn().mockImplementation(() => {
+            throw Error('this is a mock failure');
+        });
+        blobService.blobFetchingService.fetchMp3File = mockFecthMp3File;
+
+        // Act
+        // Assert
+        expect(async () => await audioStreamingService.streamMp3File(fileName!, rangeHeader)).rejects.toThrow('fileName cannot be empty.');
+    });
+
     it('should return headers and readstream on successful webm call', async () => {
         // Arrange
         const fileName = 'testFileName';
@@ -65,5 +95,35 @@ describe('Audio streaming service test', () => {
         // Act
         // Assert
         expect(async () => await audioStreamingService.streamWebmFile(fileName, rangeHeader)).rejects.toThrow('this is a mock failure');
+    });
+
+    it('should throw exception if file name input is null', async () => {
+        // Arrange
+        const fileName = null;
+        const rangeHeader = '1500';
+        const mockFecthWebmFile = jest.fn().mockImplementation(() => {
+            throw Error('this is a mock failure');
+        });
+        blobService.blobFetchingService.fetchWebmFile = mockFecthWebmFile;
+
+        // Act
+        // Assert
+        expect(async () => await audioStreamingService.streamWebmFile(fileName!, rangeHeader)).rejects.toThrow(
+            'fileName cannot be null or undefined.'
+        );
+    });
+
+    it('should throw exception if file name input is an empmty string', async () => {
+        // Arrange
+        const fileName = '';
+        const rangeHeader = '1500';
+        const mockFecthWebmFile = jest.fn().mockImplementation(() => {
+            throw Error('this is a mock failure');
+        });
+        blobService.blobFetchingService.fetchWebmFile = mockFecthWebmFile;
+
+        // Act
+        // Assert
+        expect(async () => await audioStreamingService.streamWebmFile(fileName!, rangeHeader)).rejects.toThrow('fileName cannot be empty.');
     });
 });

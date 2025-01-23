@@ -1,4 +1,4 @@
-export interface MusicSubmission {
+export interface MusicSubmissionDto {
     band: string;
     contact: string;
     email: string;

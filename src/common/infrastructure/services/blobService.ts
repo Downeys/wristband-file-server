@@ -8,6 +8,7 @@ import { BlobFetchingService, FetchFileResponse } from '../../../streaming/appli
 import { BlobSubmissionService, UploadFileResponse } from '../../../submissions/application/interfaces/infrastructureContracts';
 import { ASSETS_PATH } from '../constants/blobConstants';
 import BlobStorageError from '../errors/BlobStorageError';
+import { guardAgainstNull, guardAgainstNullOrEmpty } from '../../domain/utils/argumentHelpers';
 
 const NAMESPACE = 'blob-service';
 
@@ -53,23 +54,27 @@ const fetchFile = async (fileName: string, container: string): Promise<FetchFile
     }
 };
 
-const persistPhotoSubmission = async (photo: File): Promise<UploadFileResponse> => {
-    logging.info(NAMESPACE, `Uploading album art. FileName: ${photo.name}`);
-    return await uploadFile(photo, photoSubmissionContainer, photoSubmissionUrl);
+const persistPhotoSubmission = async (image: File): Promise<UploadFileResponse> => {
+    guardAgainstNull(image, 'image');
+    logging.info(NAMESPACE, `Uploading album art. FileName: ${image.name}`);
+    return await uploadFile(image, photoSubmissionContainer, photoSubmissionUrl);
 };
 
 const persistSongSubmission = async (song: File): Promise<UploadFileResponse> => {
+    guardAgainstNull(song, 'song');
     logging.info(NAMESPACE, `Uploading song. Filename: ${song.name}`);
     return await uploadFile(song, musicSubmissionContainer, musicSubmissionUrl);
 };
 
 const fetchMp3File = async (fileName: string): Promise<FetchFileResponse> => {
+    guardAgainstNullOrEmpty(fileName, 'fileName');
     logging.info(NAMESPACE, `Fetching mp3 file. Filename: ${fileName}`);
     const mp3FileName = fileName.trim() + '.mp3';
     return await fetchFile(mp3FileName, mp3Container);
 };
 
 const fetchWebmFile = async (fileName: string): Promise<FetchFileResponse> => {
+    guardAgainstNullOrEmpty(fileName, 'fileName');
     logging.info(NAMESPACE, `Fetching webm file. Filename: ${fileName}`);
     const webmFileName = fileName.trim() + '.webm';
     return await fetchFile(webmFileName, webmContainer);

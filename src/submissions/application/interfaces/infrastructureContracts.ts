@@ -1,4 +1,4 @@
-import { MusicSubmission } from './modelInterfaces';
+import { MusicSubmissionEntityType } from '../../domain/interfaces/submissionInterfaces';
 
 export interface UploadFileResponse {
     fileUrl: string;
@@ -10,5 +10,5 @@ export interface BlobSubmissionService {
 }
 
 export interface MusicSubmissionRepo {
-    persistMusicSubmission: (musicSubmission: MusicSubmission) => Promise<string>;
+    persistMusicSubmission: (musicSubmission: MusicSubmissionEntityType) => Promise<string>;
 }

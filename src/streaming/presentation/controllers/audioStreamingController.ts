@@ -2,26 +2,29 @@ import { NextFunction, Request, Response } from 'express';
 import logging from '../../../common/infrastructure/logging/logging';
 import audioStreamingService from '../../application/services/audioStreamingService';
 import { AudioStreamingController } from '../../application/interfaces/presentationInterfaces';
-import asyncErrorHandler from '../../../common/presentation/errors/asyncErrorHandler';
+import { ValidationError } from '../../../common/application/errors/ValidationError';
+import { asyncErrorHandler } from '../../../common/presentation/errors/asyncErrorHandler';
 
 const NAMESPACE = 'audio-streaming-controller';
 
 const getMp3AudioStream = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     logging.info(NAMESPACE, 'Fetching mp3 stream');
-    const { fileName } = req.params;
+    const { fileId } = req.params;
     const range = req.headers.range;
+    if (!fileId) throw new ValidationError('Missing file id. File id must be provided as a request parameter.');
 
-    const { stream, headers } = await audioStreamingService.streamMp3File(fileName, range);
+    const { stream, headers } = await audioStreamingService.streamMp3File(fileId, range);
     res.writeHead(206, headers);
     stream.pipe(res);
 };
 
 const getWebmAudioStream = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     logging.info(NAMESPACE, 'Fetching webm stream');
-    const { fileName } = req.params;
+    const { fileId } = req.params;
     const range = req.headers.range;
+    if (!fileId) throw new ValidationError('Missing file id. File id must be provided as a request parameter.');
 
-    const { stream, headers } = await audioStreamingService.streamWebmFile(fileName, range);
+    const { stream, headers } = await audioStreamingService.streamWebmFile(fileId, range);
     res.writeHead(206, headers);
     stream.pipe(res);
 };

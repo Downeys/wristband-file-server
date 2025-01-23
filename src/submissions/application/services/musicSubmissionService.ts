@@ -1,21 +1,27 @@
+import { ValidationError } from '../../../common/application/errors/ValidationError';
+import { guardAgainstNull, guardAgainstNullOrEmpty } from '../../../common/domain/utils/argumentHelpers';
 import { blobSubmissionService } from '../../../common/infrastructure/services/blobService';
+import { MusicSubmissionEntity } from '../../domain/entities/MusicSubmissionEntity';
+import { MusicSubmissionForm } from '../../domain/entities/MusicSubmissionForm';
 import { musicSubmissionRepo } from '../../infrastructure/repositories/musicSubmissionRepo';
-import { MusicSubmission, MusicSubmissionInput, MusicSubmissionResponse } from '../interfaces/modelInterfaces';
+import { MusicSubmissionInput, MusicSubmissionResponse } from '../interfaces/modelInterfaces';
 import { MusicSubmissionService } from '../interfaces/serviceInterfaces';
 
-export const handleMusicSubmissionUpload = async (
-    musicSubmissionInput: MusicSubmissionInput,
-    images: File[],
-    songs: File[]
-): Promise<MusicSubmissionResponse> => {
-    const imageLinks = await saveImages(images);
-    const audioLinks = await saveSongs(songs);
-    const musicSubmission: MusicSubmission = {
-        ...musicSubmissionInput,
-        imageLinks,
-        audioLinks,
-    };
-    const submissionId = await musicSubmissionRepo.persistMusicSubmission(musicSubmission);
+export const handleMusicSubmissionUpload = async (input: MusicSubmissionInput, images: File[], songs: File[]): Promise<MusicSubmissionResponse> => {
+    guardAgainstNull(input, 'input');
+    guardAgainstNullOrEmpty(images, 'images');
+    guardAgainstNullOrEmpty(songs, 'songs');
+    const submissionFormEntity = new MusicSubmissionForm(input.band, input.contact, input.email, input.phone, input.attestation);
+    const submissionEntity = new MusicSubmissionEntity(submissionFormEntity, images, songs);
+    const isValidSubmission = submissionEntity.isValid();
+    if (!isValidSubmission) {
+        throw new ValidationError(`Invalid submission: ${submissionEntity.validationMessages}`);
+    }
+    const imageUrls = await saveImages(submissionEntity.audioFiles);
+    const audioUrls = await saveSongs(submissionEntity.audioFiles);
+    submissionEntity.setImageUrls(imageUrls);
+    submissionEntity.setAudioUrls(audioUrls);
+    const submissionId = await musicSubmissionRepo.persistMusicSubmission(submissionEntity);
     return { submissionId };
 };
 

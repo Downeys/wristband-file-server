@@ -1,4 +1,4 @@
-import { BaseError } from '../../domain/error/BaseError';
+import { BaseError } from '../../domain/errors/BaseError';
 
 export class DataAccessError extends BaseError {
     constructor(message: string) {

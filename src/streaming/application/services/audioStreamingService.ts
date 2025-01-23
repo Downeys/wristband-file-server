@@ -5,10 +5,12 @@ import { blobFetchingService } from '../../../common/infrastructure/services/blo
 import { CHUNK_SIZE } from '../constants/fileConstants';
 import { ContentType, CONTENT_TYPE_HEADER } from '../constants/headerConstants';
 import { OutgoingHttpHeaders } from 'node:http2';
+import { guardAgainstNullOrEmpty } from '../../../common/domain/utils/argumentHelpers';
 
 const NAMESPACE = 'audio-streaming-service';
 
 const streamMp3File = async (fileName: string, rangeHeader?: string): Promise<StreamAudioFileResponse> => {
+    guardAgainstNullOrEmpty(fileName, 'fileName');
     logging.info(NAMESPACE, `Fetching file: ${fileName}`);
     const { filePath } = await blobFetchingService.fetchMp3File(fileName); // path to audio file
 
@@ -20,6 +22,7 @@ const streamMp3File = async (fileName: string, rangeHeader?: string): Promise<St
 };
 
 const streamWebmFile = async (fileName: string, rangeHeader?: string): Promise<StreamAudioFileResponse> => {
+    guardAgainstNullOrEmpty(fileName, 'fileName');
     logging.info(NAMESPACE, `Fetching file: ${fileName}`);
     const { filePath } = await blobFetchingService.fetchWebmFile(fileName); // path to audio file
 
