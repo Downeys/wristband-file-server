@@ -1,4 +1,4 @@
-import { BaseError } from '../../domain/error/BaseError';
+import { BaseError } from '../../domain/errors/BaseError';
 
 export class BlobStorageError extends BaseError {
     constructor(message: string) {

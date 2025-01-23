@@ -3,6 +3,7 @@ import musicSubmissionController from './musicSubmissionController';
 import musicSubmissionService from '../../application/services/musicSubmissionService';
 import { MusicSubmissionInput } from '../../application/interfaces/modelInterfaces';
 import { getMockFile } from '../../../common/infrastructure/utils/helpers/testHelpers';
+import { ValidationError } from '../../../common/application/errors/ValidationError';
 
 jest.mock('../../application/services/musicSubmissionService');
 
@@ -57,8 +58,10 @@ describe('music submission endpoints', () => {
         musicSubmissionService.handleMusicSubmissionUpload = mockHandleMusicSubmissionUpload;
 
         // Act
+        await musicSubmissionController.createMusicSubmission(req, res, mockNext);
+
         // Assert
-        await expect(() => musicSubmissionController.createMusicSubmission(req, res, mockNext)).rejects.toThrow('Internal server error');
+        expect(mockNext).toHaveBeenCalledWith(new ValidationError('Missing files. Image and song files must be included with the request.'));
     });
 
     it('should throw exception if submission fails', async () => {
@@ -87,7 +90,9 @@ describe('music submission endpoints', () => {
         musicSubmissionService.handleMusicSubmissionUpload = mockHandleMusicSubmissionUpload;
 
         // Act
+        await musicSubmissionController.createMusicSubmission(req, res, mockNext);
+
         // Assert
-        expect(async () => await musicSubmissionController.createMusicSubmission(req, res, mockNext)).rejects.toThrow('This is a mock failure');
+        expect(mockNext).toHaveBeenCalledWith(new Error('This is a mock failure'));
     });
 });

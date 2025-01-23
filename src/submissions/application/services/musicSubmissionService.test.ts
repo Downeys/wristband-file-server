@@ -13,8 +13,8 @@ describe('Music submission service test', () => {
         const mockSubmission: MusicSubmissionInput = {
             band: 'testBand',
             contact: 'testContact',
-            email: 'testEmail',
-            phone: 'testPhone',
+            email: 'test@email.com',
+            phone: '111-555-9999',
             attestation: true,
         };
         const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
@@ -39,8 +39,8 @@ describe('Music submission service test', () => {
         const mockSubmission: MusicSubmissionInput = {
             band: 'testBand',
             contact: 'testContact',
-            email: 'testEmail',
-            phone: 'testPhone',
+            email: 'test@email.com',
+            phone: '111-555-9999',
             attestation: true,
         };
         const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
@@ -59,6 +59,34 @@ describe('Music submission service test', () => {
         // Assert
         expect(async () => await musicSubmissionService.handleMusicSubmissionUpload(mockSubmission, [mockPhoto], [mockSong])).rejects.toThrow(
             'this is a mock failure'
+        );
+    });
+
+    it('should throw validation exception if submission is invalid', async () => {
+        // Arrange
+        const mockSubmission: MusicSubmissionInput = {
+            band: 'testBand',
+            contact: 'testContact',
+            email: 'invalidEmail.com',
+            phone: '111-555-9999',
+            attestation: true,
+        };
+        const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
+        const mockSong = getMockFile('mockSong', 1111, 'audio/mp3');
+
+        const mockFilePersist = jest.fn().mockImplementation(() => 'mockPath');
+        blobService.blobSubmissionService.persistPhotoSubmission = mockFilePersist;
+        blobService.blobSubmissionService.persistSongSubmission = mockFilePersist;
+
+        const mockDbPersist = jest.fn().mockImplementation(() => {
+            throw Error('this is a mock failure');
+        });
+        musicSubmissionRepo.persistMusicSubmission = mockDbPersist;
+
+        // Act
+        // Assert
+        expect(async () => await musicSubmissionService.handleMusicSubmissionUpload(mockSubmission, [mockPhoto], [mockSong])).rejects.toThrow(
+            'Invalid submission: There is an issue with the form.,Invalid email. Please ensure the email is accurate and formed properly.'
         );
     });
 });

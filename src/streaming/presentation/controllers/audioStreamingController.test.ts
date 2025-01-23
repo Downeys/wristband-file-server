@@ -1,15 +1,19 @@
 import { getMockReq, getMockRes } from '@jest-mock/express';
 import audioStreamingController from './audioStreamingController';
 import audioStreamingService from '../../application/services/audioStreamingService';
+import ValidationError from '../../../common/application/errors/ValidationError';
 
 jest.mock('../../application/services/audioStreamingService');
 
 describe('audio streaming endpoints', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    });
     it('should call service layer and return 206 code if mp3 stream call is successful', async () => {
         // Arrange
         const testRangeHeader = '1500';
         const testFileName = 'testFileName';
-        const req = getMockReq({ params: { fileName: testFileName }, headers: { range: testRangeHeader } });
+        const req = getMockReq({ params: { fileId: testFileName }, headers: { range: testRangeHeader } });
         const { res } = getMockRes();
         const mockNext = jest.fn();
         const mockPipe = jest.fn();
@@ -25,28 +29,28 @@ describe('audio streaming endpoints', () => {
         expect(mockPipe).toHaveBeenCalledWith(res);
     });
 
-    it('should throw exception if mp3 stream call fails', async () => {
+    it('should throw validation exception if file id param is null', async () => {
         // Arrange
         const testRangeHeader = '1500';
-        const testFileName = 'testFileName';
-        const req = getMockReq({ params: { fileName: testFileName }, headers: { range: testRangeHeader } });
+        const req = getMockReq({ headers: { range: testRangeHeader } });
         const { res } = getMockRes();
         const mockNext = jest.fn();
-        const mockStreamMp3File = jest.fn().mockImplementation(() => {
-            throw new Error('This is a mock failure');
-        });
+        const mockPipe = jest.fn();
+        const mockStreamMp3File = jest.fn().mockImplementation(() => ({ stream: { pipe: mockPipe }, headers: 'mockHeaders' }));
         audioStreamingService.streamMp3File = mockStreamMp3File;
 
         // Act
+        await audioStreamingController.getMp3AudioStream(req, res, mockNext);
+
         // Assert
-        expect(async () => await audioStreamingController.getMp3AudioStream(req, res, mockNext)).rejects.toThrow('This is a mock failure');
+        expect(mockNext).toHaveBeenCalledWith(new ValidationError('Missing file id. File id must be provided as a request parameter.'));
     });
 
     it('should call service layer and return 206 code if webm stream call is successful', async () => {
         // Arrange
         const testRangeHeader = '1500';
         const testFileName = 'testFileName';
-        const req = getMockReq({ params: { fileName: testFileName }, headers: { range: testRangeHeader } });
+        const req = getMockReq({ params: { fileId: testFileName }, headers: { range: testRangeHeader } });
         const { res } = getMockRes();
         const mockNext = jest.fn();
         const mockPipe = jest.fn();
@@ -62,20 +66,20 @@ describe('audio streaming endpoints', () => {
         expect(mockPipe).toHaveBeenCalledWith(res);
     });
 
-    it('should throw exception if webm stream call fails', async () => {
+    it('should throw exception if file id param is null', async () => {
         // Arrange
         const testRangeHeader = '1500';
-        const testFileName = 'testFileName';
-        const req = getMockReq({ params: { fileName: testFileName }, headers: { range: testRangeHeader } });
+        const req = getMockReq({ headers: { range: testRangeHeader } });
         const { res } = getMockRes();
         const mockNext = jest.fn();
-        const mockStreamWebmFile = jest.fn().mockImplementation(() => {
-            throw new Error('This is a mock failure');
-        });
+        const mockPipe = jest.fn();
+        const mockStreamWebmFile = jest.fn().mockImplementation(() => ({ stream: { pipe: mockPipe }, headers: 'mockHeaders' }));
         audioStreamingService.streamWebmFile = mockStreamWebmFile;
 
         // Act
+        await audioStreamingController.getWebmAudioStream(req, res, mockNext);
+
         // Assert
-        expect(async () => await audioStreamingController.getMp3AudioStream(req, res, mockNext)).rejects.toThrow('This is a mock failure');
+        expect(mockNext).toHaveBeenCalledWith(new ValidationError('Missing file id. File id must be provided as a request parameter.'));
     });
 });

@@ -6,12 +6,12 @@ import config from '../config/config';
 const mockDownloadToFile = jest.fn().mockImplementation((savePath: string) => {
     const validSavePath1 = path.join(ASSETS_PATH, 'validFileName.mp3');
     const validSavePath2 = path.join(ASSETS_PATH, 'validFileName.webm');
-    if (savePath === validSavePath1 || savePath === validSavePath2) return 'testSavePath';
+    if (savePath === validSavePath1 || savePath === validSavePath2) return { requestId: 'testSavePath' };
     return null;
 });
 
 const mockUpload = jest.fn().mockImplementation((buffer, byteLength) => {
-    if (buffer.mockFail) return null;
+    if (buffer.mockFail) throw new Error('this is a mock failure');
     return { requestId: 'testRequestId' };
 });
 
@@ -76,7 +76,23 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
 
             // Act
             // Assert
-            expect(async () => await blobFetchingService.fetchMp3File(testInput)).rejects.toThrow('Internal Server Error');
+            expect(async () => await blobFetchingService.fetchMp3File(testInput)).rejects.toThrow('Blob response is null or undefined');
+        });
+        it('should throw exception if the filename input is null', async () => {
+            // Arrange
+            const testInput = null;
+
+            // Act
+            // Assert
+            expect(async () => await blobFetchingService.fetchMp3File(testInput!)).rejects.toThrow('fileName cannot be null or undefined.');
+        });
+        it('should throw exception if the filename input is empty string', async () => {
+            // Arrange
+            const testInput = '';
+
+            // Act
+            // Assert
+            expect(async () => await blobFetchingService.fetchMp3File(testInput!)).rejects.toThrow('fileName cannot be empty.');
         });
         it('should fetch webm if the file does not already exist in local storage', async () => {
             // Arrange
@@ -108,7 +124,23 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
 
             // Act
             // Assert
-            expect(async () => await blobFetchingService.fetchWebmFile(testInput)).rejects.toThrow('Internal Server Error');
+            expect(async () => await blobFetchingService.fetchWebmFile(testInput)).rejects.toThrow('Blob response is null or undefined');
+        });
+        it('should throw exception if fileName input is null', async () => {
+            // Arrange
+            const testInput = null;
+
+            // Act
+            // Assert
+            expect(async () => await blobFetchingService.fetchWebmFile(testInput!)).rejects.toThrow('fileName cannot be null or undefined.');
+        });
+        it('should throw exception if fileName input is empty string', async () => {
+            // Arrange
+            const testInput = '';
+
+            // Act
+            // Assert
+            expect(async () => await blobFetchingService.fetchWebmFile(testInput!)).rejects.toThrow('fileName cannot be empty.');
         });
     });
     describe('blobSubmissionService tests: tests methods used to store blobs', () => {
@@ -129,7 +161,15 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
 
             // Act
             // Assert
-            expect(async () => await blobSubmissionService.persistPhotoSubmission(testInput)).rejects.toThrow('Internal Server Error');
+            expect(async () => await blobSubmissionService.persistPhotoSubmission(testInput)).rejects.toThrow('this is a mock failure');
+        });
+        it('should throw exception if photo input is null', async () => {
+            // Arrange
+            const testInput = null;
+
+            // Act
+            // Assert
+            expect(async () => await blobSubmissionService.persistPhotoSubmission(testInput!)).rejects.toThrow('image cannot be null or undefined.');
         });
         it('should return storage url if song upload is successful', async () => {
             // Arrange
@@ -148,7 +188,15 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
 
             // Act
             // Assert
-            expect(async () => await blobSubmissionService.persistSongSubmission(testInput)).rejects.toThrow('Internal Server Error');
+            expect(async () => await blobSubmissionService.persistSongSubmission(testInput)).rejects.toThrow('this is a mock failure');
+        });
+        it('should throw exception if song input is null', async () => {
+            // Arrange
+            const testInput = null;
+
+            // Act
+            // Assert
+            expect(async () => await blobSubmissionService.persistSongSubmission(testInput!)).rejects.toThrow('song cannot be null or undefined.');
         });
     });
 });
