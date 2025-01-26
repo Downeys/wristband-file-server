@@ -11,13 +11,13 @@ jest.mock('node:fs', () => ({
 describe('Audio streaming service test', () => {
     it('should return headers and readstream on successful mp3 call', async () => {
         // Arrange
-        const fileName = 'testFileName';
+        const songId = 'testSongId';
         const rangeHeader = '1500';
         const mockFecthMp3File = jest.fn().mockImplementation(() => ({ filePath: 'testMp3Path' }));
         blobService.blobFetchingService.fetchMp3File = mockFecthMp3File;
 
         // Act
-        const result = await audioStreamingService.streamMp3File(fileName, rangeHeader);
+        const result = await audioStreamingService.streamMp3File(songId, rangeHeader);
 
         // Assert
         expect(result.stream).toBe('mockStream');
@@ -26,7 +26,7 @@ describe('Audio streaming service test', () => {
 
     it('should throw exception if blobService fails to provide mp3 file path', async () => {
         // Arrange
-        const fileName = 'badTestFileName';
+        const songId = 'badTestSongId';
         const rangeHeader = '1500';
         const mockFecthMp3File = jest.fn().mockImplementation(() => {
             throw Error('this is a mock failure');
@@ -35,12 +35,12 @@ describe('Audio streaming service test', () => {
 
         // Act
         // Assert
-        expect(async () => await audioStreamingService.streamMp3File(fileName, rangeHeader)).rejects.toThrow('this is a mock failure');
+        expect(async () => await audioStreamingService.streamMp3File(songId, rangeHeader)).rejects.toThrow('this is a mock failure');
     });
 
-    it('should throw exception if fileName input is null', async () => {
+    it('should throw exception if songId input is null', async () => {
         // Arrange
-        const fileName = null;
+        const songId = null;
         const rangeHeader = '1500';
         const mockFecthMp3File = jest.fn().mockImplementation(() => {
             throw Error('this is a mock failure');
@@ -49,14 +49,12 @@ describe('Audio streaming service test', () => {
 
         // Act
         // Assert
-        expect(async () => await audioStreamingService.streamMp3File(fileName!, rangeHeader)).rejects.toThrow(
-            'fileName cannot be null or undefined.'
-        );
+        expect(async () => await audioStreamingService.streamMp3File(songId!, rangeHeader)).rejects.toThrow('songId cannot be null or undefined.');
     });
 
-    it('should throw exception if fileName input is an empty string', async () => {
+    it('should throw exception if songId input is an empty string', async () => {
         // Arrange
-        const fileName = '';
+        const songId = '';
         const rangeHeader = '1500';
         const mockFecthMp3File = jest.fn().mockImplementation(() => {
             throw Error('this is a mock failure');
@@ -65,18 +63,18 @@ describe('Audio streaming service test', () => {
 
         // Act
         // Assert
-        expect(async () => await audioStreamingService.streamMp3File(fileName!, rangeHeader)).rejects.toThrow('fileName cannot be empty.');
+        expect(async () => await audioStreamingService.streamMp3File(songId!, rangeHeader)).rejects.toThrow('songId cannot be empty.');
     });
 
     it('should return headers and readstream on successful webm call', async () => {
         // Arrange
-        const fileName = 'testFileName';
+        const songId = 'testSongId';
         const rangeHeader = '1500';
         const mockFecthWebmFile = jest.fn().mockImplementation(() => ({ filePath: 'testWebmPath' }));
         blobService.blobFetchingService.fetchWebmFile = mockFecthWebmFile;
 
         // Act
-        const result = await audioStreamingService.streamWebmFile(fileName, rangeHeader);
+        const result = await audioStreamingService.streamWebmFile(songId, rangeHeader);
 
         // Assert
         expect(result.stream).toBe('mockStream');
@@ -85,7 +83,7 @@ describe('Audio streaming service test', () => {
 
     it('should throw exception if blobService fails to provide webm file path', async () => {
         // Arrange
-        const fileName = 'badTestFileName';
+        const songId = 'badTestSongId';
         const rangeHeader = '1500';
         const mockFecthWebmFile = jest.fn().mockImplementation(() => {
             throw Error('this is a mock failure');
@@ -94,12 +92,12 @@ describe('Audio streaming service test', () => {
 
         // Act
         // Assert
-        expect(async () => await audioStreamingService.streamWebmFile(fileName, rangeHeader)).rejects.toThrow('this is a mock failure');
+        expect(async () => await audioStreamingService.streamWebmFile(songId, rangeHeader)).rejects.toThrow('this is a mock failure');
     });
 
     it('should throw exception if file name input is null', async () => {
         // Arrange
-        const fileName = null;
+        const songId = null;
         const rangeHeader = '1500';
         const mockFecthWebmFile = jest.fn().mockImplementation(() => {
             throw Error('this is a mock failure');
@@ -108,14 +106,12 @@ describe('Audio streaming service test', () => {
 
         // Act
         // Assert
-        expect(async () => await audioStreamingService.streamWebmFile(fileName!, rangeHeader)).rejects.toThrow(
-            'fileName cannot be null or undefined.'
-        );
+        expect(async () => await audioStreamingService.streamWebmFile(songId!, rangeHeader)).rejects.toThrow('songId cannot be null or undefined.');
     });
 
     it('should throw exception if file name input is an empmty string', async () => {
         // Arrange
-        const fileName = '';
+        const songId = '';
         const rangeHeader = '1500';
         const mockFecthWebmFile = jest.fn().mockImplementation(() => {
             throw Error('this is a mock failure');
@@ -124,6 +120,6 @@ describe('Audio streaming service test', () => {
 
         // Act
         // Assert
-        expect(async () => await audioStreamingService.streamWebmFile(fileName!, rangeHeader)).rejects.toThrow('fileName cannot be empty.');
+        expect(async () => await audioStreamingService.streamWebmFile(songId!, rangeHeader)).rejects.toThrow('songId cannot be empty.');
     });
 });

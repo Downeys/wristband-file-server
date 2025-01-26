@@ -7,6 +7,6 @@ export interface StreamAudioFileResponse {
 }
 
 export interface AudioStreamingService {
-    streamMp3File(fileName: string, rangeHeader?: string): Promise<StreamAudioFileResponse>;
-    streamWebmFile(fileName: string, rangeHeader?: string): Promise<StreamAudioFileResponse>;
+    streamMp3File(songId: string, rangeHeader?: string): Promise<StreamAudioFileResponse>;
+    streamWebmFile(songId: string, rangeHeader?: string): Promise<StreamAudioFileResponse>;
 }

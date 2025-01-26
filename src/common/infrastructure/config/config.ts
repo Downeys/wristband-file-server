@@ -1,16 +1,18 @@
 import dotenv from 'dotenv';
+import { DefaultAzureCredential } from '@azure/identity';
+import { SecretClient } from '@azure/keyvault-secrets';
 
 dotenv.config();
 
-export interface RawEnvVars {
-    blobConnectionString: string | undefined;
-    photoSubmissionContainer: string | undefined;
-    musicSubmissionContainer: string | undefined;
-    mp3Container: string | undefined;
-    webmContainer: string | undefined;
-    photoSubmissionUrl: string | undefined;
-    musicSubmissionUrl: string | undefined;
-    mongoDbUri: string | undefined;
+export interface RawSecrets {
+    BLOB_CONNECTION_STRING: string | undefined;
+    PHOTO_SUBMISSION_CONTAINER: string | undefined;
+    MUSIC_SUBMISSION_CONTAINER: string | undefined;
+    MP3_CONTAINER: string | undefined;
+    WEBM_CONTAINER: string | undefined;
+    PHOTO_SUBMISSION_URL: string | undefined;
+    MUSIC_SUBMISSION_URL: string | undefined;
+    MONGO_DB_URI: string | undefined;
 }
 
 interface BlobProps {
@@ -32,36 +34,45 @@ interface Config {
     mongoDb: MongoDbProps;
 }
 
-const envVars: RawEnvVars = {
-    blobConnectionString: process.env.BLOB_CONNECTION_STRING,
-    photoSubmissionContainer: process.env.PHOTO_SUBMISSION_CONTAINER,
-    musicSubmissionContainer: process.env.MUSIC_SUBMISSION_CONTAINER,
-    mp3Container: process.env.MP3_CONTAINER,
-    webmContainer: process.env.WEBM_CONTAINER,
-    photoSubmissionUrl: process.env.PHOTO_SUBMISSION_URL,
-    musicSubmissionUrl: process.env.MUSIC_SUBMISSION_URL,
-    mongoDbUri: process.env.MONGO_DB_URI,
+const getSecrets = async (): Promise<RawSecrets> => {
+    const credential = new DefaultAzureCredential();
+
+    const vaultName = process.env.KEY_VAULT_NAME;
+    const url = `https://${vaultName}.vault.azure.net`;
+
+    const client = new SecretClient(url, credential);
+
+    const secrets: Record<string, string | undefined> = {};
+
+    for await (let secretProperties of client.listPropertiesOfSecrets()) {
+        const secret = await client.getSecret(secretProperties.name);
+        if (!secret.value) throw new Error(`Missing value for ${secretProperties.name} in config.env`);
+        secrets[secret.name.replaceAll('-', '_')] = secret.value;
+    }
+    return secrets as unknown as RawSecrets;
 };
 
-export const getSanatizedConfig = (c: RawEnvVars): Config => {
-    for (const [key, value] of Object.entries(c)) {
+export const getSanatizedConfig = async (): Promise<Config> => {
+    const secrets = await getSecrets();
+
+    for (const [key, value] of Object.entries(secrets)) {
         if (value === undefined) {
             throw new Error(`Missing key ${key} in config.env`);
         }
     }
 
     const blob: BlobProps = {
-        connectionString: c.blobConnectionString!,
-        photoSubmissionContainer: c.photoSubmissionContainer!,
-        musicSubmissionContainer: c.musicSubmissionContainer!,
-        mp3Container: c.mp3Container!,
-        webmContainer: c.webmContainer!,
-        photoSubmissionUrl: c.photoSubmissionUrl!,
-        musicSubmissionUrl: c.musicSubmissionUrl!,
+        connectionString: secrets.BLOB_CONNECTION_STRING!,
+        photoSubmissionContainer: secrets.PHOTO_SUBMISSION_CONTAINER!,
+        musicSubmissionContainer: secrets.MUSIC_SUBMISSION_CONTAINER!,
+        mp3Container: secrets.MP3_CONTAINER!,
+        webmContainer: secrets.WEBM_CONTAINER!,
+        photoSubmissionUrl: secrets.PHOTO_SUBMISSION_URL!,
+        musicSubmissionUrl: secrets.MUSIC_SUBMISSION_URL!,
     };
 
     const mongoDb: MongoDbProps = {
-        uri: c.mongoDbUri!,
+        uri: secrets.MONGO_DB_URI!,
     };
 
     return {
@@ -70,4 +81,4 @@ export const getSanatizedConfig = (c: RawEnvVars): Config => {
     };
 };
 
-export default getSanatizedConfig(envVars);
+export default getSanatizedConfig();
