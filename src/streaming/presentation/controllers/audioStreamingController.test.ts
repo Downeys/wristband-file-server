@@ -12,8 +12,8 @@ describe('audio streaming endpoints', () => {
     it('should call service layer and return 206 code if mp3 stream call is successful', async () => {
         // Arrange
         const testRangeHeader = '1500';
-        const testFileName = 'testFileName';
-        const req = getMockReq({ params: { fileId: testFileName }, headers: { range: testRangeHeader } });
+        const testSongId = 'testSongId';
+        const req = getMockReq({ params: { songId: testSongId }, headers: { range: testRangeHeader } });
         const { res } = getMockRes();
         const mockNext = jest.fn();
         const mockPipe = jest.fn();
@@ -24,7 +24,7 @@ describe('audio streaming endpoints', () => {
         await audioStreamingController.getMp3AudioStream(req, res, mockNext);
 
         // Assert
-        expect(mockStreamMp3File).toHaveBeenCalledWith(testFileName, testRangeHeader);
+        expect(mockStreamMp3File).toHaveBeenCalledWith(testSongId, testRangeHeader);
         expect(res.writeHead).toHaveBeenCalledWith(206, 'mockHeaders');
         expect(mockPipe).toHaveBeenCalledWith(res);
     });
@@ -49,8 +49,8 @@ describe('audio streaming endpoints', () => {
     it('should call service layer and return 206 code if webm stream call is successful', async () => {
         // Arrange
         const testRangeHeader = '1500';
-        const testFileName = 'testFileName';
-        const req = getMockReq({ params: { fileId: testFileName }, headers: { range: testRangeHeader } });
+        const testSongId = 'testSongId';
+        const req = getMockReq({ params: { songId: testSongId }, headers: { range: testRangeHeader } });
         const { res } = getMockRes();
         const mockNext = jest.fn();
         const mockPipe = jest.fn();
@@ -61,7 +61,7 @@ describe('audio streaming endpoints', () => {
         await audioStreamingController.getWebmAudioStream(req, res, mockNext);
 
         // Assert
-        expect(mockStreamWebmFile).toHaveBeenCalledWith(testFileName, testRangeHeader);
+        expect(mockStreamWebmFile).toHaveBeenCalledWith(testSongId, testRangeHeader);
         expect(res.writeHead).toHaveBeenCalledWith(206, 'mockHeaders');
         expect(mockPipe).toHaveBeenCalledWith(res);
     });

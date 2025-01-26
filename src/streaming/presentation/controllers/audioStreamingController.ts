@@ -9,22 +9,22 @@ const NAMESPACE = 'audio-streaming-controller';
 
 const getMp3AudioStream = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     logging.info(NAMESPACE, 'Fetching mp3 stream');
-    const { fileId } = req.params;
+    const { songId } = req.params;
     const range = req.headers.range;
-    if (!fileId) throw new ValidationError('Missing file id. File id must be provided as a request parameter.');
+    if (!songId) throw new ValidationError('Missing file id. File id must be provided as a request parameter.');
 
-    const { stream, headers } = await audioStreamingService.streamMp3File(fileId, range);
+    const { stream, headers } = await audioStreamingService.streamMp3File(songId, range);
     res.writeHead(206, headers);
     stream.pipe(res);
 };
 
 const getWebmAudioStream = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     logging.info(NAMESPACE, 'Fetching webm stream');
-    const { fileId } = req.params;
+    const { songId } = req.params;
     const range = req.headers.range;
-    if (!fileId) throw new ValidationError('Missing file id. File id must be provided as a request parameter.');
+    if (!songId) throw new ValidationError('Missing file id. File id must be provided as a request parameter.');
 
-    const { stream, headers } = await audioStreamingService.streamWebmFile(fileId, range);
+    const { stream, headers } = await audioStreamingService.streamWebmFile(songId, range);
     res.writeHead(206, headers);
     stream.pipe(res);
 };

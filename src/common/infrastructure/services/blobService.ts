@@ -2,7 +2,7 @@ import { BlobServiceClient } from '@azure/storage-blob';
 import path from 'node:path';
 import { existsSync } from 'node:fs';
 import logging from '../logging/logging';
-import config from '../config/config';
+import asyncConfig from '../config/config';
 import { generateBlobName, getFileBuffer } from '../utils/helpers/fileHelpers';
 import { BlobFetchingService, FetchFileResponse } from '../../../streaming/application/interfaces/infrastructureContracts';
 import { BlobSubmissionService, UploadFileResponse } from '../../../submissions/application/interfaces/infrastructureContracts';
@@ -12,12 +12,13 @@ import { guardAgainstNull, guardAgainstNullOrEmpty } from '../../domain/utils/ar
 
 const NAMESPACE = 'blob-service';
 
-const { connectionString, photoSubmissionUrl, musicSubmissionUrl, photoSubmissionContainer, musicSubmissionContainer, mp3Container, webmContainer } =
-    config.blob;
-
-const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+const getBlobServiceClient = async () => {
+    const config = await asyncConfig;
+    return BlobServiceClient.fromConnectionString(config.blob.connectionString);
+};
 
 const uploadFile = async (file: File, container: string, baseUrl: string): Promise<UploadFileResponse> => {
+    const blobServiceClient = await getBlobServiceClient();
     const containerClient = blobServiceClient.getContainerClient(container);
     const blobName = generateBlobName(file);
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
@@ -35,6 +36,7 @@ const uploadFile = async (file: File, container: string, baseUrl: string): Promi
 
 const fetchFile = async (fileName: string, container: string): Promise<FetchFileResponse> => {
     logging.info(NAMESPACE, `Fetching file ${fileName}.`);
+    const blobServiceClient = await getBlobServiceClient();
     const containerClient = blobServiceClient.getContainerClient(container);
     const blobClient = containerClient.getBlockBlobClient(fileName);
     const savePath = path.join(ASSETS_PATH, fileName);
@@ -56,28 +58,32 @@ const fetchFile = async (fileName: string, container: string): Promise<FetchFile
 
 const persistPhotoSubmission = async (image: File): Promise<UploadFileResponse> => {
     guardAgainstNull(image, 'image');
+    const config = await asyncConfig;
     logging.info(NAMESPACE, `Uploading album art. FileName: ${image.name}`);
-    return await uploadFile(image, photoSubmissionContainer, photoSubmissionUrl);
+    return await uploadFile(image, config.blob.photoSubmissionContainer, config.blob.photoSubmissionUrl);
 };
 
 const persistSongSubmission = async (song: File): Promise<UploadFileResponse> => {
     guardAgainstNull(song, 'song');
+    const config = await asyncConfig;
     logging.info(NAMESPACE, `Uploading song. Filename: ${song.name}`);
-    return await uploadFile(song, musicSubmissionContainer, musicSubmissionUrl);
+    return await uploadFile(song, config.blob.musicSubmissionContainer, config.blob.musicSubmissionUrl);
 };
 
-const fetchMp3File = async (fileName: string): Promise<FetchFileResponse> => {
-    guardAgainstNullOrEmpty(fileName, 'fileName');
-    logging.info(NAMESPACE, `Fetching mp3 file. Filename: ${fileName}`);
-    const mp3FileName = fileName.trim() + '.mp3';
-    return await fetchFile(mp3FileName, mp3Container);
+const fetchMp3File = async (songId: string): Promise<FetchFileResponse> => {
+    guardAgainstNullOrEmpty(songId, 'songId');
+    const config = await asyncConfig;
+    logging.info(NAMESPACE, `Fetching mp3 file. songId: ${songId}`);
+    const mp3FileName = songId.trim() + '.mp3';
+    return await fetchFile(mp3FileName, config.blob.mp3Container);
 };
 
-const fetchWebmFile = async (fileName: string): Promise<FetchFileResponse> => {
-    guardAgainstNullOrEmpty(fileName, 'fileName');
-    logging.info(NAMESPACE, `Fetching webm file. Filename: ${fileName}`);
-    const webmFileName = fileName.trim() + '.webm';
-    return await fetchFile(webmFileName, webmContainer);
+const fetchWebmFile = async (songId: string): Promise<FetchFileResponse> => {
+    guardAgainstNullOrEmpty(songId, 'songId');
+    const config = await asyncConfig;
+    logging.info(NAMESPACE, `Fetching webm file. songId: ${songId}`);
+    const webmFileName = songId.trim() + '.webm';
+    return await fetchFile(webmFileName, config.blob.webmContainer);
 };
 
 export const blobFetchingService: BlobFetchingService = {

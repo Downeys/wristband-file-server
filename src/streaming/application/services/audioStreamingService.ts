@@ -9,10 +9,10 @@ import { guardAgainstNullOrEmpty } from '../../../common/domain/utils/argumentHe
 
 const NAMESPACE = 'audio-streaming-service';
 
-const streamMp3File = async (fileName: string, rangeHeader?: string): Promise<StreamAudioFileResponse> => {
-    guardAgainstNullOrEmpty(fileName, 'fileName');
-    logging.info(NAMESPACE, `Fetching file: ${fileName}`);
-    const { filePath } = await blobFetchingService.fetchMp3File(fileName); // path to audio file
+const streamMp3File = async (songId: string, rangeHeader?: string): Promise<StreamAudioFileResponse> => {
+    guardAgainstNullOrEmpty(songId, 'songId');
+    logging.info(NAMESPACE, `Fetching file: ${songId}`);
+    const { filePath } = await blobFetchingService.fetchMp3File(songId); // path to audio file
 
     const { start, end, audioSize } = getAudioChunkDetails(filePath, rangeHeader);
     const headers = getResponseHeaders(start, end, audioSize, ContentType.mp3);
@@ -21,10 +21,10 @@ const streamMp3File = async (fileName: string, rangeHeader?: string): Promise<St
     return { headers, stream };
 };
 
-const streamWebmFile = async (fileName: string, rangeHeader?: string): Promise<StreamAudioFileResponse> => {
-    guardAgainstNullOrEmpty(fileName, 'fileName');
-    logging.info(NAMESPACE, `Fetching file: ${fileName}`);
-    const { filePath } = await blobFetchingService.fetchWebmFile(fileName); // path to audio file
+const streamWebmFile = async (songId: string, rangeHeader?: string): Promise<StreamAudioFileResponse> => {
+    guardAgainstNullOrEmpty(songId, 'songId');
+    logging.info(NAMESPACE, `Fetching file: ${songId}`);
+    const { filePath } = await blobFetchingService.fetchWebmFile(songId); // path to audio file
 
     const { start, end, audioSize } = getAudioChunkDetails(filePath, rangeHeader);
     const headers = getResponseHeaders(start, end, audioSize, ContentType.webm);

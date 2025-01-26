@@ -3,6 +3,6 @@ export interface FetchFileResponse {
 }
 
 export interface BlobFetchingService {
-    fetchMp3File: (fileName: string) => Promise<FetchFileResponse>;
-    fetchWebmFile: (fileName: string) => Promise<FetchFileResponse>;
+    fetchMp3File: (songId: string) => Promise<FetchFileResponse>;
+    fetchWebmFile: (songId: string) => Promise<FetchFileResponse>;
 }
