@@ -20,8 +20,8 @@ const createMusicSubmission = async (req: Request, res: Response, next: NextFunc
     const audioFiles = files.audioFiles;
     const musicSubmission: MusicSubmissionInput = { ...req.body };
     const submission = await musicSubmissionService.handleMusicSubmissionUpload(musicSubmission, imageFiles, audioFiles);
-    res.send(200).json({
-        result: submission.submissionId,
+    res.status(201).json({
+        referenceId: submission.submissionId,
     });
 };
 

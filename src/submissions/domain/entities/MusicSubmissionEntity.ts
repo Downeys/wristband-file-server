@@ -1,15 +1,16 @@
+import { CustomFile } from '../../../common/application/interfaces/fileInterfaces';
 import { guardAgainstNull, guardAgainstNullOrEmpty } from '../../../common/domain/utils/argumentHelpers';
 import { MusicSubmissionEntityType, MusicSubmissionFormType } from '../interfaces/submissionInterfaces';
 import musicSubmissionEntityValidator from '../validators/musicSubmissionEntityValidator';
 
 export class MusicSubmissionEntity implements MusicSubmissionEntityType {
     form: MusicSubmissionFormType;
-    imageFiles: File[];
-    audioFiles: File[];
+    imageFiles: CustomFile[];
+    audioFiles: CustomFile[];
     imageUrls: string[] = [];
     audioUrls: string[] = [];
     validationMessages: string[] = [];
-    constructor(form: MusicSubmissionFormType, imageFiles: File[], audioFiles: File[]) {
+    constructor(form: MusicSubmissionFormType, imageFiles: CustomFile[], audioFiles: CustomFile[]) {
         this.form = guardAgainstNull(form, 'form');
         this.imageFiles = guardAgainstNullOrEmpty(imageFiles, 'imageFiles');
         this.audioFiles = guardAgainstNullOrEmpty(audioFiles, 'audioFiles');

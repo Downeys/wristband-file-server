@@ -9,6 +9,9 @@ import { BlobSubmissionService, UploadFileResponse } from '../../../submissions/
 import { ASSETS_PATH } from '../constants/blobConstants';
 import BlobStorageError from '../errors/BlobStorageError';
 import { guardAgainstNull, guardAgainstNullOrEmpty } from '../../domain/utils/argumentHelpers';
+import BaseError from '../../domain/errors/BaseError';
+import NotFoundError from '../errors/NotFoundError';
+import { CustomFile } from '../../application/interfaces/fileInterfaces';
 
 const NAMESPACE = 'blob-service';
 
@@ -17,7 +20,7 @@ const getBlobServiceClient = async () => {
     return BlobServiceClient.fromConnectionString(config.blob.connectionString);
 };
 
-const uploadFile = async (file: File, container: string, baseUrl: string): Promise<UploadFileResponse> => {
+const uploadFile = async (file: CustomFile, container: string, baseUrl: string): Promise<UploadFileResponse> => {
     const blobServiceClient = await getBlobServiceClient();
     const containerClient = blobServiceClient.getContainerClient(container);
     const blobName = generateBlobName(file);
@@ -47,23 +50,26 @@ const fetchFile = async (fileName: string, container: string): Promise<FetchFile
     try {
         const downloadResponse = await blobClient.downloadToFile(savePath);
         if (!downloadResponse) {
+            logging.error(NAMESPACE, 'blob is null or undefined');
             throw new BlobStorageError(`Blob response is null or undefined`);
         }
         return { filePath: savePath };
     } catch (e: unknown) {
-        const err = e as Error;
+        const err = e as BaseError;
+        logging.error(NAMESPACE, err.message);
+        if (err.statusCode === 404) throw new NotFoundError('Cannot find song with that id.');
         throw new BlobStorageError(err.message);
     }
 };
 
-const persistPhotoSubmission = async (image: File): Promise<UploadFileResponse> => {
+const persistPhotoSubmission = async (image: CustomFile): Promise<UploadFileResponse> => {
     guardAgainstNull(image, 'image');
     const config = await asyncConfig;
     logging.info(NAMESPACE, `Uploading album art. FileName: ${image.name}`);
     return await uploadFile(image, config.blob.photoSubmissionContainer, config.blob.photoSubmissionUrl);
 };
 
-const persistSongSubmission = async (song: File): Promise<UploadFileResponse> => {
+const persistSongSubmission = async (song: CustomFile): Promise<UploadFileResponse> => {
     guardAgainstNull(song, 'song');
     const config = await asyncConfig;
     logging.info(NAMESPACE, `Uploading song. Filename: ${song.name}`);

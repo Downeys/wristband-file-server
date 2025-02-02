@@ -4,8 +4,10 @@ import config from './common/presentation/config/config';
 import healthCheckRoutes from './healthCheck/presentation/routes/healthCheckRoutes';
 import submissionRoutes from './submissions/presentation/routes/musicSubmissionRoutes';
 import streamingRoutes from './streaming/presentation/routes/audioStreamingRoutes';
-import NotFoundError from './common/presentation/errors/NotFoundError';
+import NotFoundError from './common/infrastructure/errors/NotFoundError';
 import globalErrorHandler from './common/presentation/controllers/errorController';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './common/presentation/config/swagger';
 
 const NAMESPACE = 'index';
 
@@ -40,6 +42,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/healthcheck', healthCheckRoutes);
 app.use('/submit', submissionRoutes);
 app.use('/audio-stream', streamingRoutes);
+
+// swagger
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.all('*', (req, res, next) => {
     const error = new NotFoundError(`${req.originalUrl} is not a valid url. It does not exist.`);
