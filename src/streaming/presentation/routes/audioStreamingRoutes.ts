@@ -10,12 +10,7 @@ const router = express.Router();
  *     summary: Get mp3 audio stream
  *     description: Fetches chunked audio data
  *     parameters:
- *       - in : path
- *         name: songId
- *         schema:
- *           type: string
- *         required: true
- *         description: Id of the song to be fetched
+ *       - $ref: '#/components/parameters/songIdParam'
  *     responses:
  *       206:
  *         description: Chunked song data
@@ -40,12 +35,7 @@ router.get('/mp3/:songId/', audioStreamingController.getMp3AudioStream);
  *     summary: Get webm video stream
  *     desctiption: Fetches chunked video data
  *     parameters:
- *       - in : path
- *         name: songId
- *         schema:
- *           type: string
- *         required: true
- *         description: Id of the song to be fetched
+ *       - $ref: '#/components/parameters/songIdParam'
  *     responses:
  *       206:
  *         description: Chunked song data

@@ -3,6 +3,15 @@ import swaggerJsdoc from 'swagger-jsdoc';
 /**
  * @swagger
  * components:
+ *   parameters:
+ *     songIdParam:
+ *       in: path
+ *       name: songId
+ *       description: Id of song to be fetched
+ *       required: true
+ *       schema:
+ *         type: string
+ *       example: 'yetisburg-we-are-the-egg'
  *   schemas:
  *     MusicSubmissionInput:
  *       type: object
