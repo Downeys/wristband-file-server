@@ -26,7 +26,7 @@ describe('fileHelper tests: tests helper methods used by blob service', () => {
     });
     it('should return photo file buffer', async () => {
         // Arrange
-        const mockPhoto: File = getMockFile('testPhoto.png', 8192, 'image/png');
+        const mockPhoto = getMockFile('testPhoto.png', 8192, 'image/png');
 
         //Act
         const result = await getFileBuffer(mockPhoto);

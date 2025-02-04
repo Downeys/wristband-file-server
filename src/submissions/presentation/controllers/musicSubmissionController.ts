@@ -12,16 +12,17 @@ const createMusicSubmission = async (req: Request, res: Response, next: NextFunc
     logging.info(NAMESPACE, 'Music submission received');
     if (!req.files) {
         logging.error(NAMESPACE, 'Failed to submit music. Files missing from request.');
-        throw new ValidationError('Missing files. Image and song files must be included with the request.');
+        const err = new ValidationError('Missing files. Image and song files must be included with the request.');
+        next(err);
     }
     // This next line is necessary to enable the property indexing of file groups from the files object
-    const files = Object.fromEntries(Object.entries(req.files));
+    const files = Object.fromEntries(Object.entries(req.files!));
     const imageFiles = files.imageFiles;
     const audioFiles = files.audioFiles;
     const musicSubmission: MusicSubmissionInput = { ...req.body };
     const submission = await musicSubmissionService.handleMusicSubmissionUpload(musicSubmission, imageFiles, audioFiles);
-    res.send(200).json({
-        result: submission.submissionId,
+    res.status(201).json({
+        referenceId: submission.submissionId,
     });
 };
 

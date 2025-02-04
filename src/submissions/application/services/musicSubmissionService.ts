@@ -1,4 +1,5 @@
 import { ValidationError } from '../../../common/application/errors/ValidationError';
+import { CustomFile } from '../../../common/application/interfaces/fileInterfaces';
 import { guardAgainstNull, guardAgainstNullOrEmpty } from '../../../common/domain/utils/argumentHelpers';
 import { blobSubmissionService } from '../../../common/infrastructure/services/blobService';
 import { MusicSubmissionEntity } from '../../domain/entities/MusicSubmissionEntity';
@@ -7,7 +8,11 @@ import { musicSubmissionRepo } from '../../infrastructure/repositories/musicSubm
 import { MusicSubmissionInput, MusicSubmissionResponse } from '../interfaces/modelInterfaces';
 import { MusicSubmissionService } from '../interfaces/serviceInterfaces';
 
-export const handleMusicSubmissionUpload = async (input: MusicSubmissionInput, images: File[], songs: File[]): Promise<MusicSubmissionResponse> => {
+export const handleMusicSubmissionUpload = async (
+    input: MusicSubmissionInput,
+    images: CustomFile[],
+    songs: CustomFile[]
+): Promise<MusicSubmissionResponse> => {
     guardAgainstNull(input, 'input');
     guardAgainstNullOrEmpty(images, 'images');
     guardAgainstNullOrEmpty(songs, 'songs');
@@ -25,7 +30,7 @@ export const handleMusicSubmissionUpload = async (input: MusicSubmissionInput, i
     return { submissionId };
 };
 
-const saveImages = async (images: File[]): Promise<string[]> => {
+const saveImages = async (images: CustomFile[]): Promise<string[]> => {
     const imageUrls: string[] = [];
     for (let i = 0; i < images.length; i++) {
         const { fileUrl } = await blobSubmissionService.persistPhotoSubmission(images[i]);
@@ -34,7 +39,7 @@ const saveImages = async (images: File[]): Promise<string[]> => {
     return imageUrls;
 };
 
-const saveSongs = async (songs: File[]): Promise<string[]> => {
+const saveSongs = async (songs: CustomFile[]): Promise<string[]> => {
     const songUrls: string[] = [];
     for (let i = 0; i < songs.length; i++) {
         const { fileUrl } = await blobSubmissionService.persistSongSubmission(songs[i]);
