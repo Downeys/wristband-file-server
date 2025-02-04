@@ -36,8 +36,8 @@ describe('music submission endpoints', () => {
 
         // Assert
         expect(mockHandleMusicSubmissionUpload).toHaveBeenCalledWith(mockSubmission, [mockPhoto], [mockSong]);
-        expect(res.send).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith({ result: 'mockSubmissionId' });
+        expect(res.status).toHaveBeenCalledWith(201);
+        expect(res.json).toHaveBeenCalledWith({ referenceId: 'mockSubmissionId' });
     });
 
     it('should throw exception if no files are included in the submission', async () => {

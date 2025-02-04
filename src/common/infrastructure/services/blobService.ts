@@ -10,7 +10,7 @@ import { ASSETS_PATH } from '../constants/blobConstants';
 import BlobStorageError from '../errors/BlobStorageError';
 import { guardAgainstNull, guardAgainstNullOrEmpty } from '../../domain/utils/argumentHelpers';
 import BaseError from '../../domain/errors/BaseError';
-import NotFoundError from '../errors/NotFoundError';
+import NotFoundError from '../../application/errors/NotFoundError';
 import { CustomFile } from '../../application/interfaces/fileInterfaces';
 
 const NAMESPACE = 'blob-service';

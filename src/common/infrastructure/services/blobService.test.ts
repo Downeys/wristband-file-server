@@ -2,6 +2,7 @@ import path from 'node:path';
 import { ASSETS_PATH } from '../constants/blobConstants';
 import { blobFetchingService, blobSubmissionService } from './blobService';
 import asyncConfig from '../config/config';
+import { CustomFile } from '../../application/interfaces/fileInterfaces';
 
 jest.mock('../config/config', async () => ({
     blob: {
@@ -159,7 +160,7 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
         it('should return storage url if photo upload is successful', async () => {
             // Arrange
             const config = await asyncConfig;
-            const testInput = { name: 'testFileName', arrayBuffer: jest.fn() } as unknown as File;
+            const testInput = { name: 'testFileName', arrayBuffer: jest.fn() } as unknown as CustomFile;
             const expectedOutput = { fileUrl: config.blob.photoSubmissionUrl + 'testFileName' };
 
             // Act
@@ -170,7 +171,7 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
         });
         it('should throw exception if photo upload fails', async () => {
             // Arrange
-            const testInput = { name: 'fileShouldFail', arrayBuffer: jest.fn() } as unknown as File;
+            const testInput = { name: 'fileShouldFail', arrayBuffer: jest.fn() } as unknown as CustomFile;
 
             // Act
             // Assert
@@ -187,7 +188,7 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
         it('should return storage url if song upload is successful', async () => {
             // Arrange
             const config = await asyncConfig;
-            const testInput = { name: 'testFileName', arrayBuffer: jest.fn() } as unknown as File;
+            const testInput = { name: 'testFileName', arrayBuffer: jest.fn() } as unknown as CustomFile;
             const expectedOutput = { fileUrl: config.blob.musicSubmissionUrl + 'testFileName' };
 
             // Act
@@ -198,7 +199,7 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
         });
         it('should throw exception if song upload fails', async () => {
             // Arrange
-            const testInput = { name: 'fileShouldFail', arrayBuffer: jest.fn() } as unknown as File;
+            const testInput = { name: 'fileShouldFail', arrayBuffer: jest.fn() } as unknown as CustomFile;
 
             // Act
             // Assert

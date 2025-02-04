@@ -4,7 +4,7 @@ import config from './common/presentation/config/config';
 import healthCheckRoutes from './healthCheck/presentation/routes/healthCheckRoutes';
 import submissionRoutes from './submissions/presentation/routes/musicSubmissionRoutes';
 import streamingRoutes from './streaming/presentation/routes/audioStreamingRoutes';
-import NotFoundError from './common/infrastructure/errors/NotFoundError';
+import NotFoundError from './common/application/errors/NotFoundError';
 import globalErrorHandler from './common/presentation/controllers/errorController';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './common/presentation/config/swagger';
