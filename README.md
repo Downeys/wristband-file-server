@@ -2,9 +2,9 @@
 
 ## Application Summary
 
-The Wristband Radio app is a streaming music player that showcases music from local artists. The app has streaming-radio, on-demand streaming, a music submission form, contact form, and an about page. Please check out the live application at [wristbandradio.com](https://www.wristbandradio.com)
+The Wristband Radio app is a streaming music player that showcases music from local artists. The app has streaming-radio, on-demand streaming, a music submission form, contact form, and an about page. Please check out the live application at [wristbandradio.com](https://wristbandradio.com)
 
-I'm creating this project for many reasons. First of all, it has been a life dream of mine to create this kind of app for my fellow local musicians, so it's definitely a passion project for me. Beyond that though, I want to have a public example of my Full Stack Development work to act as a portfolio as I apply for better developer jobs. Futhermore, I just like to code. I enjoy making projects in my spare time that help me grow my programming skills. I'll probably always be working on some kind of side-project application, and right now this is the one I'm working on. This is not my first full personal application I've built and deployed, this is my second. I've made the repos from my first project private now because they no longer represent my best efforts at app building. That first project was a great learning experience, but it's not up to the standards I have for my portfolio.
+I'm creating this project for many reasons. First of all, it has been a lifelong dream of mine to create this kind of app for myself and my fellow local musicians, so it's definitely a passion project for me. Beyond that though, I want to have a public example of my full stack development skills to act as a portfolio while I search for a better developer job. Futhermore, I just like to code. I enjoy making projects in my spare time, and it helps me grow my programming skills.
 
 ## Project Summary
 
@@ -28,57 +28,100 @@ I have made my current dev environment public to make it easier for potential em
 
 ### Run just this project locally
 
-**clone the repo:** git clone https://github.com/Downeys/wristband-file-server.git
-**install the packages:** npm ci
+**clone the repo:**
+
+git clone https://github.com/Downeys/wristband-file-server.git
+
+**install the packages:**
+
+npm ci
+
 **setup environment variables:**
 
 - locate the .env-example file at the root of the project and rename it to .env
 - There is one variable in the .env file with a value of 'get-from-readme'. Take the encoded value above, decode it in a base64 decoder, and use the result in place of 'get-from-readme'.
 
-**run the project:** npm start
+**run the project:**
+
+npm start
 
 ### Run the full application in docker
 
-**clone the backend repo:** git clone https://github.com/Downeys/wristband-file-server.git
-**install the packages:** npm ci
+**clone the repo:**
+
+git clone https://github.com/Downeys/wristband-file-server.git
+
+**install the packages:**
+
+npm ci
+
 **setup environment variables:**
 
 - locate the .env-example file at the root of the project and rename it to .env
 - There is one variable in the .env file with a value of 'get-from-readme'. Take the encoded value above, decode it in a base64 decoder, and use the result in place of 'get-from-readme'.
 
-**run the docker compose** docker compose up
+**run the docker compose:**
+
+docker compose up -d
 
 ### Run local backend with docker frontend
 
-**clone the backend repo:** git clone https://github.com/Downeys/wristband-file-server.git
-**install the packages:** npm ci
+**clone the backend repo:**
+
+git clone https://github.com/Downeys/wristband-file-server.git
+
+**install the packages:**
+
+npm ci
+
 **setup environment variables:**
 
 - locate the .env-example file at the root of the project and rename it to .env
 - There is one variable in the .env file with a value of 'get-from-readme'. Take the encoded value above, decode it in a base64 decoder, and use the result in place of 'get-from-readme'.
 
-**run the project:** npm start
+**run the frontend**
 
-### Run local backend and local frontend
+docker compose -f docker-compose.frontend.yml up -d
 
-**clone the backend repo:** git clone https://github.com/Downeys/wristband-file-server.git
-**install the packages:** npm ci
+**run the file servers:**
+
+npm start
+
+### Run backend and frontend from local console
+
+**clone the backend repo:**
+
+git clone https://github.com/Downeys/wristband-file-server.git
+
+**install the packages:**
+
+npm ci
+
 **setup environment variables:**
 
 - locate the .env-example file at the root of the project and rename it to .env
 - There is one variable in the .env file with a value of 'get-from-readme'. Take the encoded value above, decode it in a base64 decoder, and use the result in place of 'get-from-readme'.
 
-**run the containers:** docker compose up -f docker-compose.frontend.yml
-**run the backend:** npm start
+**run the backend:**
 
-**clone the frontend repo:** git clone https://github.com/Downeys/wristband-collection.git
-**install the packages:** npm ci
+npm start
+
+**clone the frontend repo:**
+
+git clone https://github.com/Downeys/wristband-collection.git
+
+**install the packages:**
+
+npm ci
+
 **setup environment variables:**
 
 - locate the .env-example file at the root of the project and rename it to .env
 - There is one variable in the .env file with a value of 'get-from-readme'. Take the encoded value above, decode it in a base64 decoder, and use the result in place of 'get-from-readme'. It's the same value for both projects.
 
-**run the project:** npm run dev
+**run the frontend:**
+
+npm run dev
 
 ## Usage
 

@@ -1,10 +1,5 @@
 version: '3'
 services:
-    file-server:
-        container_name: file_server
-        image: downeys/wristband-radio-file-server
-        ports:
-            - '8080:8080'
     react-app:
         container_name: frontend
         image: downeys/wristband-radio-music-player:latest
