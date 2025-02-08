@@ -1,5 +1,4 @@
 import express from 'express';
-import logging from './common/infrastructure/logging/logging';
 import config from './common/presentation/config/config';
 import healthCheckRoutes from './healthCheck/presentation/routes/healthCheckRoutes';
 import submissionRoutes from './submissions/presentation/routes/musicSubmissionRoutes';
@@ -8,6 +7,7 @@ import NotFoundError from './common/application/errors/NotFoundError';
 import globalErrorHandler from './common/presentation/controllers/errorController';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './common/presentation/config/swagger';
+import { logger } from './common/application/config/logging';
 
 const NAMESPACE = 'index';
 
@@ -17,14 +17,15 @@ const app = express();
 app.use((req, res, next) => {
     if (!req.url.match('/healthcheck')) {
         const loggingContext = {
+            namespace: NAMESPACE,
             method: req.method,
             url: req.url,
             ip: req.socket.remoteAddress,
         };
-        logging.debug(NAMESPACE, 'received request', loggingContext);
+        logger.debug('received request', loggingContext);
 
         res.on('finish', () => {
-            logging.info(NAMESPACE, 'produced response', {
+            logger.info(NAMESPACE, 'produced response', {
                 ...loggingContext,
                 status: res.statusCode,
             });
@@ -55,5 +56,5 @@ app.all('*', (req, res, next) => {
 app.use(globalErrorHandler);
 
 app.listen(config.server.port, () => {
-    console.log(`Server listening on port ${config.server.port}`);
+    logger.info(`Server listening on port ${config.server.port}`);
 });

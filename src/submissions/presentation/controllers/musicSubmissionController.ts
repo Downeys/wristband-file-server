@@ -1,17 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
-import logging from '../../../common/infrastructure/logging/logging';
 import { MusicSubmissionInput } from '../../application/interfaces/modelInterfaces';
 import musicSubmissionService from '../../application/services/musicSubmissionService';
 import { MusicSubmissionController } from '../../application/interfaces/presentationInterfaces';
 import ValidationError from '../../../common/application/errors/ValidationError';
 import { asyncErrorHandler } from '../../../common/presentation/errors/asyncErrorHandler';
+import { logger } from '../../../common/application/config/logging';
 
 const NAMESPACE = 'music-submission-controller';
 
 const createMusicSubmission = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    logging.info(NAMESPACE, 'Music submission received');
+    logger.info('Music submission received', { namespace: NAMESPACE });
     if (!req.files) {
-        logging.error(NAMESPACE, 'Failed to submit music. Files missing from request.');
+        logger.error('Failed to submit music. Files missing from request.', { namespace: NAMESPACE });
         const err = new ValidationError('Missing files. Image and song files must be included with the request.');
         next(err);
     }
