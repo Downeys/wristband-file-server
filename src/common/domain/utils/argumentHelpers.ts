@@ -7,12 +7,12 @@
 import ArgumentError from '../errors/ArgumentError';
 
 export const guardAgainstNull = <T>(argument: T, argumentName: string): T => {
-    if (argument === null || argument === undefined) throw new ArgumentError(`${argumentName} cannot be null or undefined.`);
-    return argument;
+  if (argument === null || argument === undefined) throw new ArgumentError(`${argumentName} cannot be null or undefined.`);
+  return argument;
 };
 
 export const guardAgainstNullOrEmpty = <T extends { length: number }>(argument: T, argumentName: string): T => {
-    const nullValidatedArg = guardAgainstNull(argument, argumentName);
-    if (!nullValidatedArg.length || nullValidatedArg.length === 0) throw new ArgumentError(`${argumentName} cannot be empty.`);
-    return argument;
+  const nullValidatedArg = guardAgainstNull(argument, argumentName);
+  if (!nullValidatedArg.length || nullValidatedArg.length === 0) throw new ArgumentError(`${argumentName} cannot be empty.`);
+  return argument;
 };

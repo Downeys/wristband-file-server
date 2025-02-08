@@ -1,4 +1,4 @@
 export interface Entity {
-    validationMessages: string[];
-    isValid: () => boolean;
+  validationMessages: string[];
+  isValid: () => boolean;
 }

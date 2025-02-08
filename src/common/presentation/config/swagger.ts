@@ -54,20 +54,20 @@ import swaggerJsdoc from 'swagger-jsdoc';
  */
 
 const options: swaggerJsdoc.Options = {
-    failOnErrors: true,
-    definition: {
-        openapi: '3.0.3',
-        info: {
-            title: 'Wristband File Server Docs',
-            version: '1.0.0',
-        },
+  failOnErrors: true,
+  definition: {
+    openapi: '3.0.3',
+    info: {
+      title: 'Wristband File Server Docs',
+      version: '1.0.0',
     },
-    apis: [
-        './src/common/presentation/config/swagger.ts',
-        './src/healthCheck/presentation/routes/healthCheckRoutes.ts',
-        './src/streaming/presentation/routes/audioStreamingRoutes.ts',
-        './src/submissions/presentation/routes/musicSubmissionRoutes.ts',
-    ],
+  },
+  apis: [
+    './src/common/presentation/config/swagger.ts',
+    './src/healthCheck/presentation/routes/healthCheckRoutes.ts',
+    './src/streaming/presentation/routes/audioStreamingRoutes.ts',
+    './src/submissions/presentation/routes/musicSubmissionRoutes.ts',
+  ],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

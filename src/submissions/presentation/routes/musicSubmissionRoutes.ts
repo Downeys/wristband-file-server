@@ -30,12 +30,12 @@ const upload = multer();
  *         description: Internal Server Error
  */
 router.post(
-    '/',
-    upload.fields([
-        { name: 'imageFiles', maxCount: 20 },
-        { name: 'audioFiles', maxCount: 20 },
-    ]),
-    musicSubmissionController.createMusicSubmission
+  '/',
+  upload.fields([
+    { name: 'imageFiles', maxCount: 20 },
+    { name: 'audioFiles', maxCount: 20 },
+  ]),
+  musicSubmissionController.createMusicSubmission
 );
 
 export default router;

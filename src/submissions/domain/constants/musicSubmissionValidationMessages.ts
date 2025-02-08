@@ -1,5 +1,5 @@
 export const INVALID_CONTACT_NAME =
-    'Invalid contact name. Names can only include alphabetic letters, spaces, commas, periods, apostrophes, and dashes. Anything else will cause this submission to fail.';
+  'Invalid contact name. Names can only include alphabetic letters, spaces, commas, periods, apostrophes, and dashes. Anything else will cause this submission to fail.';
 export const INVALID_EMAIL = 'Invalid email. Please ensure the email is accurate and formed properly.';
 export const INVALID_PHONE = 'Invalid phone number. Please ensure the phone number is accurate and formed properly.';
 export const MISSING_ATTESTATION = 'Missing ownership attestation. Please attest to the ownership of the submission.';

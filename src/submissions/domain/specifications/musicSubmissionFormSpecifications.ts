@@ -2,17 +2,17 @@ import { Specification } from '../../../common/domain/interfaces/specificationIn
 import { MusicSubmissionForm } from '../entities/MusicSubmissionForm';
 
 export const isContactNameValid: Specification<MusicSubmissionForm> = {
-    isSatisfiedBy: (form: MusicSubmissionForm) => /^[a-zÀ-ÿ ,.'-]+$/i.test(form.contact),
+  isSatisfiedBy: (form: MusicSubmissionForm) => /^[a-zÀ-ÿ ,.'-]+$/i.test(form.contact),
 };
 
 export const isEmailValid: Specification<MusicSubmissionForm> = {
-    isSatisfiedBy: (form: MusicSubmissionForm) => /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/i.test(form.email),
+  isSatisfiedBy: (form: MusicSubmissionForm) => /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/i.test(form.email),
 };
 
 export const isPhoneValid: Specification<MusicSubmissionForm> = {
-    isSatisfiedBy: (form: MusicSubmissionForm) => !form.phone || /^(1[ -]?)?\d{3}[ -]?\d{3}[ -]?\d{4}$/i.test(form.phone),
+  isSatisfiedBy: (form: MusicSubmissionForm) => !form.phone || /^(1[ -]?)?\d{3}[ -]?\d{3}[ -]?\d{4}$/i.test(form.phone),
 };
 
 export const isAttestationChecked: Specification<MusicSubmissionForm> = {
-    isSatisfiedBy: (form: MusicSubmissionForm) => form.attestation,
+  isSatisfiedBy: (form: MusicSubmissionForm) => form.attestation,
 };

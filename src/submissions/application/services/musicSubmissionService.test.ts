@@ -8,85 +8,85 @@ jest.mock('../../../common/infrastructure/services/blobService');
 jest.mock('../../infrastructure/repositories/musicSubmissionRepo');
 
 describe('Music submission service test', () => {
-    it('should return submission id if it was successfully persisted', async () => {
-        // Arrange
-        const mockSubmission: MusicSubmissionInput = {
-            band: 'testBand',
-            contact: 'testContact',
-            email: 'test@email.com',
-            phone: '111-555-9999',
-            attestation: true,
-        };
-        const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
-        const mockSong = getMockFile('mockSong', 1111, 'audio/mp3');
+  it('should return submission id if it was successfully persisted', async () => {
+    // Arrange
+    const mockSubmission: MusicSubmissionInput = {
+      band: 'testBand',
+      contact: 'testContact',
+      email: 'test@email.com',
+      phone: '111-555-9999',
+      attestation: true,
+    };
+    const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
+    const mockSong = getMockFile('mockSong', 1111, 'audio/mp3');
 
-        const mockFilePersist = jest.fn().mockImplementation(() => 'mockPath');
-        blobService.blobSubmissionService.persistPhotoSubmission = mockFilePersist;
-        blobService.blobSubmissionService.persistSongSubmission = mockFilePersist;
+    const mockFilePersist = jest.fn().mockImplementation(() => 'mockPath');
+    blobService.blobSubmissionService.persistPhotoSubmission = mockFilePersist;
+    blobService.blobSubmissionService.persistSongSubmission = mockFilePersist;
 
-        const mockDbPersist = jest.fn().mockImplementation(() => 'mockSubmissionId');
-        musicSubmissionRepo.persistMusicSubmission = mockDbPersist;
+    const mockDbPersist = jest.fn().mockImplementation(() => 'mockSubmissionId');
+    musicSubmissionRepo.persistMusicSubmission = mockDbPersist;
 
-        // Act
-        const result = await musicSubmissionService.handleMusicSubmissionUpload(mockSubmission, [mockPhoto], [mockSong]);
+    // Act
+    const result = await musicSubmissionService.handleMusicSubmissionUpload(mockSubmission, [mockPhoto], [mockSong]);
 
-        // Assert
-        expect(result.submissionId).toBe('mockSubmissionId');
+    // Assert
+    expect(result.submissionId).toBe('mockSubmissionId');
+  });
+
+  it('should throw exception if the db call fails', async () => {
+    // Arrange
+    const mockSubmission: MusicSubmissionInput = {
+      band: 'testBand',
+      contact: 'testContact',
+      email: 'test@email.com',
+      phone: '111-555-9999',
+      attestation: true,
+    };
+    const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
+    const mockSong = getMockFile('mockSong', 1111, 'audio/mp3');
+
+    const mockFilePersist = jest.fn().mockImplementation(() => 'mockPath');
+    blobService.blobSubmissionService.persistPhotoSubmission = mockFilePersist;
+    blobService.blobSubmissionService.persistSongSubmission = mockFilePersist;
+
+    const mockDbPersist = jest.fn().mockImplementation(() => {
+      throw Error('this is a mock failure');
     });
+    musicSubmissionRepo.persistMusicSubmission = mockDbPersist;
 
-    it('should throw exception if the db call fails', async () => {
-        // Arrange
-        const mockSubmission: MusicSubmissionInput = {
-            band: 'testBand',
-            contact: 'testContact',
-            email: 'test@email.com',
-            phone: '111-555-9999',
-            attestation: true,
-        };
-        const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
-        const mockSong = getMockFile('mockSong', 1111, 'audio/mp3');
+    // Act
+    // Assert
+    expect(async () => await musicSubmissionService.handleMusicSubmissionUpload(mockSubmission, [mockPhoto], [mockSong])).rejects.toThrow(
+      'this is a mock failure'
+    );
+  });
 
-        const mockFilePersist = jest.fn().mockImplementation(() => 'mockPath');
-        blobService.blobSubmissionService.persistPhotoSubmission = mockFilePersist;
-        blobService.blobSubmissionService.persistSongSubmission = mockFilePersist;
+  it('should throw validation exception if submission is invalid', async () => {
+    // Arrange
+    const mockSubmission: MusicSubmissionInput = {
+      band: 'testBand',
+      contact: 'testContact',
+      email: 'invalidEmail.com',
+      phone: '111-555-9999',
+      attestation: true,
+    };
+    const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
+    const mockSong = getMockFile('mockSong', 1111, 'audio/mp3');
 
-        const mockDbPersist = jest.fn().mockImplementation(() => {
-            throw Error('this is a mock failure');
-        });
-        musicSubmissionRepo.persistMusicSubmission = mockDbPersist;
+    const mockFilePersist = jest.fn().mockImplementation(() => 'mockPath');
+    blobService.blobSubmissionService.persistPhotoSubmission = mockFilePersist;
+    blobService.blobSubmissionService.persistSongSubmission = mockFilePersist;
 
-        // Act
-        // Assert
-        expect(async () => await musicSubmissionService.handleMusicSubmissionUpload(mockSubmission, [mockPhoto], [mockSong])).rejects.toThrow(
-            'this is a mock failure'
-        );
+    const mockDbPersist = jest.fn().mockImplementation(() => {
+      throw Error('this is a mock failure');
     });
+    musicSubmissionRepo.persistMusicSubmission = mockDbPersist;
 
-    it('should throw validation exception if submission is invalid', async () => {
-        // Arrange
-        const mockSubmission: MusicSubmissionInput = {
-            band: 'testBand',
-            contact: 'testContact',
-            email: 'invalidEmail.com',
-            phone: '111-555-9999',
-            attestation: true,
-        };
-        const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
-        const mockSong = getMockFile('mockSong', 1111, 'audio/mp3');
-
-        const mockFilePersist = jest.fn().mockImplementation(() => 'mockPath');
-        blobService.blobSubmissionService.persistPhotoSubmission = mockFilePersist;
-        blobService.blobSubmissionService.persistSongSubmission = mockFilePersist;
-
-        const mockDbPersist = jest.fn().mockImplementation(() => {
-            throw Error('this is a mock failure');
-        });
-        musicSubmissionRepo.persistMusicSubmission = mockDbPersist;
-
-        // Act
-        // Assert
-        expect(async () => await musicSubmissionService.handleMusicSubmissionUpload(mockSubmission, [mockPhoto], [mockSong])).rejects.toThrow(
-            'Invalid submission: There is an issue with the form.,Invalid email. Please ensure the email is accurate and formed properly.'
-        );
-    });
+    // Act
+    // Assert
+    expect(async () => await musicSubmissionService.handleMusicSubmissionUpload(mockSubmission, [mockPhoto], [mockSong])).rejects.toThrow(
+      'Invalid submission: There is an issue with the form.,Invalid email. Please ensure the email is accurate and formed properly.'
+    );
+  });
 });
