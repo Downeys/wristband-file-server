@@ -2,9 +2,9 @@ import { CustomFile } from '../../../common/application/interfaces/fileInterface
 import { MusicSubmissionInput, MusicSubmissionResponse } from './modelInterfaces';
 
 export interface MusicSubmissionService {
-    handleMusicSubmissionUpload: (
-        musicSubmissionInput: MusicSubmissionInput,
-        images: CustomFile[],
-        songs: CustomFile[]
-    ) => Promise<MusicSubmissionResponse>;
+  handleMusicSubmissionUpload: (
+    musicSubmissionInput: MusicSubmissionInput,
+    images: CustomFile[],
+    songs: CustomFile[]
+  ) => Promise<MusicSubmissionResponse>;
 }

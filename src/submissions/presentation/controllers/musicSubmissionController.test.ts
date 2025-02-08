@@ -8,91 +8,91 @@ import { ValidationError } from '../../../common/application/errors/ValidationEr
 jest.mock('../../application/services/musicSubmissionService');
 
 describe('music submission endpoints', () => {
-    it('should call service layer and return 200 code if submission is successful', async () => {
-        // Arrange
-        const mockSubmission: MusicSubmissionInput = {
-            band: 'testBand',
-            contact: 'testContact',
-            email: 'testEmail',
-            phone: 'testPhone',
-            attestation: true,
-        };
-        const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
-        const mockSong = getMockFile('mockSong', 1111, 'audio/mp3');
-        const req = getMockReq({
-            body: mockSubmission,
-            files: {
-                imageFiles: [mockPhoto],
-                audioFiles: [mockSong],
-            },
-        });
-        const { res } = getMockRes();
-        const mockNext = jest.fn();
-        const mockHandleMusicSubmissionUpload = jest.fn().mockImplementation(() => ({ submissionId: 'mockSubmissionId' }));
-        musicSubmissionService.handleMusicSubmissionUpload = mockHandleMusicSubmissionUpload;
-
-        // Act
-        await musicSubmissionController.createMusicSubmission(req, res, mockNext);
-
-        // Assert
-        expect(mockHandleMusicSubmissionUpload).toHaveBeenCalledWith(mockSubmission, [mockPhoto], [mockSong]);
-        expect(res.status).toHaveBeenCalledWith(201);
-        expect(res.json).toHaveBeenCalledWith({ referenceId: 'mockSubmissionId' });
+  it('should call service layer and return 200 code if submission is successful', async () => {
+    // Arrange
+    const mockSubmission: MusicSubmissionInput = {
+      band: 'testBand',
+      contact: 'testContact',
+      email: 'testEmail',
+      phone: 'testPhone',
+      attestation: true,
+    };
+    const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
+    const mockSong = getMockFile('mockSong', 1111, 'audio/mp3');
+    const req = getMockReq({
+      body: mockSubmission,
+      files: {
+        imageFiles: [mockPhoto],
+        audioFiles: [mockSong],
+      },
     });
+    const { res } = getMockRes();
+    const mockNext = jest.fn();
+    const mockHandleMusicSubmissionUpload = jest.fn().mockImplementation(() => ({ submissionId: 'mockSubmissionId' }));
+    musicSubmissionService.handleMusicSubmissionUpload = mockHandleMusicSubmissionUpload;
 
-    it('should throw exception if no files are included in the submission', async () => {
-        // Arrange
-        const mockSubmission: MusicSubmissionInput = {
-            band: 'testBand',
-            contact: 'testContact',
-            email: 'testEmail',
-            phone: 'testPhone',
-            attestation: true,
-        };
-        const req = getMockReq({
-            body: mockSubmission,
-        });
-        const { res } = getMockRes();
-        const mockNext = jest.fn();
-        const mockHandleMusicSubmissionUpload = jest.fn().mockImplementation(() => ({ submissionId: 'mockSubmissionId' }));
-        musicSubmissionService.handleMusicSubmissionUpload = mockHandleMusicSubmissionUpload;
+    // Act
+    await musicSubmissionController.createMusicSubmission(req, res, mockNext);
 
-        // Act
-        await musicSubmissionController.createMusicSubmission(req, res, mockNext);
+    // Assert
+    expect(mockHandleMusicSubmissionUpload).toHaveBeenCalledWith(mockSubmission, [mockPhoto], [mockSong]);
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({ referenceId: 'mockSubmissionId' });
+  });
 
-        // Assert
-        expect(mockNext).toHaveBeenCalledWith(new ValidationError('Missing files. Image and song files must be included with the request.'));
+  it('should throw exception if no files are included in the submission', async () => {
+    // Arrange
+    const mockSubmission: MusicSubmissionInput = {
+      band: 'testBand',
+      contact: 'testContact',
+      email: 'testEmail',
+      phone: 'testPhone',
+      attestation: true,
+    };
+    const req = getMockReq({
+      body: mockSubmission,
     });
+    const { res } = getMockRes();
+    const mockNext = jest.fn();
+    const mockHandleMusicSubmissionUpload = jest.fn().mockImplementation(() => ({ submissionId: 'mockSubmissionId' }));
+    musicSubmissionService.handleMusicSubmissionUpload = mockHandleMusicSubmissionUpload;
 
-    it('should throw exception if submission fails', async () => {
-        // Arrange
-        const mockSubmission: MusicSubmissionInput = {
-            band: 'testBand',
-            contact: 'testContact',
-            email: 'testEmail',
-            phone: 'testPhone',
-            attestation: true,
-        };
-        const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
-        const mockSong = getMockFile('mockSong', 1111, 'audio/mp3');
-        const req = getMockReq({
-            body: mockSubmission,
-            files: {
-                imageFiles: [mockPhoto],
-                audioFiles: [mockSong],
-            },
-        });
-        const { res } = getMockRes();
-        const mockNext = jest.fn();
-        const mockHandleMusicSubmissionUpload = jest.fn().mockImplementation(() => {
-            throw new Error('This is a mock failure');
-        });
-        musicSubmissionService.handleMusicSubmissionUpload = mockHandleMusicSubmissionUpload;
+    // Act
+    await musicSubmissionController.createMusicSubmission(req, res, mockNext);
 
-        // Act
-        await musicSubmissionController.createMusicSubmission(req, res, mockNext);
+    // Assert
+    expect(mockNext).toHaveBeenCalledWith(new ValidationError('Missing files. Image and song files must be included with the request.'));
+  });
 
-        // Assert
-        expect(mockNext).toHaveBeenCalledWith(new Error('This is a mock failure'));
+  it('should throw exception if submission fails', async () => {
+    // Arrange
+    const mockSubmission: MusicSubmissionInput = {
+      band: 'testBand',
+      contact: 'testContact',
+      email: 'testEmail',
+      phone: 'testPhone',
+      attestation: true,
+    };
+    const mockPhoto = getMockFile('mockPhoto', 1111, 'image/png');
+    const mockSong = getMockFile('mockSong', 1111, 'audio/mp3');
+    const req = getMockReq({
+      body: mockSubmission,
+      files: {
+        imageFiles: [mockPhoto],
+        audioFiles: [mockSong],
+      },
     });
+    const { res } = getMockRes();
+    const mockNext = jest.fn();
+    const mockHandleMusicSubmissionUpload = jest.fn().mockImplementation(() => {
+      throw new Error('This is a mock failure');
+    });
+    musicSubmissionService.handleMusicSubmissionUpload = mockHandleMusicSubmissionUpload;
+
+    // Act
+    await musicSubmissionController.createMusicSubmission(req, res, mockNext);
+
+    // Assert
+    expect(mockNext).toHaveBeenCalledWith(new Error('This is a mock failure'));
+  });
 });

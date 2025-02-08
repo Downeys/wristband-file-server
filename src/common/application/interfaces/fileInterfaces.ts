@@ -1,4 +1,4 @@
 export interface CustomFile extends File {
-    originalname: string;
-    buffer: Buffer;
+  originalname: string;
+  buffer: Buffer;
 }

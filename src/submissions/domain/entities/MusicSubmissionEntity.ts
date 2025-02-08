@@ -4,31 +4,31 @@ import { MusicSubmissionEntityType, MusicSubmissionFormType } from '../interface
 import musicSubmissionEntityValidator from '../validators/musicSubmissionEntityValidator';
 
 export class MusicSubmissionEntity implements MusicSubmissionEntityType {
-    form: MusicSubmissionFormType;
-    imageFiles: CustomFile[];
-    audioFiles: CustomFile[];
-    imageUrls: string[] = [];
-    audioUrls: string[] = [];
-    validationMessages: string[] = [];
-    constructor(form: MusicSubmissionFormType, imageFiles: CustomFile[], audioFiles: CustomFile[]) {
-        this.form = guardAgainstNull(form, 'form');
-        this.imageFiles = guardAgainstNullOrEmpty(imageFiles, 'imageFiles');
-        this.audioFiles = guardAgainstNullOrEmpty(audioFiles, 'audioFiles');
-    }
+  form: MusicSubmissionFormType;
+  imageFiles: CustomFile[];
+  audioFiles: CustomFile[];
+  imageUrls: string[] = [];
+  audioUrls: string[] = [];
+  validationMessages: string[] = [];
+  constructor(form: MusicSubmissionFormType, imageFiles: CustomFile[], audioFiles: CustomFile[]) {
+    this.form = guardAgainstNull(form, 'form');
+    this.imageFiles = guardAgainstNullOrEmpty(imageFiles, 'imageFiles');
+    this.audioFiles = guardAgainstNullOrEmpty(audioFiles, 'audioFiles');
+  }
 
-    isValid = () => {
-        const { isValid, validationMessages } = musicSubmissionEntityValidator.isValid(this);
-        if (!isValid) this.validationMessages = [...validationMessages, ...this.form.validationMessages];
-        return isValid;
-    };
+  isValid = () => {
+    const { isValid, validationMessages } = musicSubmissionEntityValidator.isValid(this);
+    if (!isValid) this.validationMessages = [...validationMessages, ...this.form.validationMessages];
+    return isValid;
+  };
 
-    setImageUrls = (urls: string[]) => {
-        guardAgainstNullOrEmpty(urls, 'urls');
-        this.imageUrls = urls;
-    };
+  setImageUrls = (urls: string[]) => {
+    guardAgainstNullOrEmpty(urls, 'urls');
+    this.imageUrls = urls;
+  };
 
-    setAudioUrls = (urls: string[]) => {
-        guardAgainstNullOrEmpty(urls, 'urls');
-        this.audioUrls = urls;
-    };
+  setAudioUrls = (urls: string[]) => {
+    guardAgainstNullOrEmpty(urls, 'urls');
+    this.audioUrls = urls;
+  };
 }

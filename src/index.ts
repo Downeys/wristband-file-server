@@ -15,24 +15,24 @@ const app = express();
 
 // logging
 app.use((req, res, next) => {
-    if (!req.url.match('/healthcheck')) {
-        const loggingContext = {
-            namespace: NAMESPACE,
-            method: req.method,
-            url: req.url,
-            ip: req.socket.remoteAddress,
-        };
-        logger.debug('received request', loggingContext);
+  if (!req.url.match('/healthcheck')) {
+    const loggingContext = {
+      namespace: NAMESPACE,
+      method: req.method,
+      url: req.url,
+      ip: req.socket.remoteAddress,
+    };
+    logger.debug('received request', loggingContext);
 
-        res.on('finish', () => {
-            logger.info(NAMESPACE, 'produced response', {
-                ...loggingContext,
-                status: res.statusCode,
-            });
-        });
-    }
+    res.on('finish', () => {
+      logger.info(NAMESPACE, 'produced response', {
+        ...loggingContext,
+        status: res.statusCode,
+      });
+    });
+  }
 
-    next();
+  next();
 });
 
 // parsing
@@ -48,13 +48,13 @@ app.use('/audio-stream', streamingRoutes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.all('*', (req, res, next) => {
-    const error = new NotFoundError(`${req.originalUrl} is not a valid url. It does not exist.`);
-    next(error);
+  const error = new NotFoundError(`${req.originalUrl} is not a valid url. It does not exist.`);
+  next(error);
 });
 
 // error handler middleware
 app.use(globalErrorHandler);
 
 app.listen(config.server.port, () => {
-    logger.info(`Server listening on port ${config.server.port}`);
+  logger.info(`Server listening on port ${config.server.port}`);
 });

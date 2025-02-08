@@ -2,14 +2,14 @@ import { CustomFile } from '../../../common/application/interfaces/fileInterface
 import { MusicSubmissionEntityType } from '../../domain/interfaces/submissionInterfaces';
 
 export interface UploadFileResponse {
-    fileUrl: string;
+  fileUrl: string;
 }
 
 export interface BlobSubmissionService {
-    persistPhotoSubmission: (photo: CustomFile) => Promise<UploadFileResponse>;
-    persistSongSubmission: (song: CustomFile) => Promise<UploadFileResponse>;
+  persistPhotoSubmission: (photo: CustomFile) => Promise<UploadFileResponse>;
+  persistSongSubmission: (song: CustomFile) => Promise<UploadFileResponse>;
 }
 
 export interface MusicSubmissionRepo {
-    persistMusicSubmission: (musicSubmission: MusicSubmissionEntityType) => Promise<string>;
+  persistMusicSubmission: (musicSubmission: MusicSubmissionEntityType) => Promise<string>;
 }
