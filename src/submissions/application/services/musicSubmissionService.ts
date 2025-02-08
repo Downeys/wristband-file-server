@@ -1,3 +1,4 @@
+import { logger } from '../../../common/application/config/logging';
 import { ValidationError } from '../../../common/application/errors/ValidationError';
 import { CustomFile } from '../../../common/application/interfaces/fileInterfaces';
 import { guardAgainstNull, guardAgainstNullOrEmpty } from '../../../common/domain/utils/argumentHelpers';
@@ -8,11 +9,14 @@ import { musicSubmissionRepo } from '../../infrastructure/repositories/musicSubm
 import { MusicSubmissionInput, MusicSubmissionResponse } from '../interfaces/modelInterfaces';
 import { MusicSubmissionService } from '../interfaces/serviceInterfaces';
 
+const NAMESPACE = 'music-submission-service';
+
 export const handleMusicSubmissionUpload = async (
     input: MusicSubmissionInput,
     images: CustomFile[],
     songs: CustomFile[]
 ): Promise<MusicSubmissionResponse> => {
+    logger.info(`Handling music submission for ${input.email}`, { namespace: NAMESPACE });
     guardAgainstNull(input, 'input');
     guardAgainstNullOrEmpty(images, 'images');
     guardAgainstNullOrEmpty(songs, 'songs');
@@ -31,6 +35,7 @@ export const handleMusicSubmissionUpload = async (
 };
 
 const saveImages = async (images: CustomFile[]): Promise<string[]> => {
+    logger.info(`Saving images count: ${images.length}`, { namespace: NAMESPACE });
     const imageUrls: string[] = [];
     for (let i = 0; i < images.length; i++) {
         const { fileUrl } = await blobSubmissionService.persistPhotoSubmission(images[i]);
@@ -40,6 +45,7 @@ const saveImages = async (images: CustomFile[]): Promise<string[]> => {
 };
 
 const saveSongs = async (songs: CustomFile[]): Promise<string[]> => {
+    logger.info(`Saving songs count: ${songs.length}`, { namespace: NAMESPACE });
     const songUrls: string[] = [];
     for (let i = 0; i < songs.length; i++) {
         const { fileUrl } = await blobSubmissionService.persistSongSubmission(songs[i]);

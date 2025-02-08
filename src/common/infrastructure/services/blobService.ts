@@ -1,7 +1,6 @@
 import { BlobServiceClient } from '@azure/storage-blob';
 import path from 'node:path';
 import { existsSync } from 'node:fs';
-import logging from '../logging/logging';
 import asyncConfig from '../config/config';
 import { generateBlobName, getFileBuffer } from '../utils/helpers/fileHelpers';
 import { BlobFetchingService, FetchFileResponse } from '../../../streaming/application/interfaces/infrastructureContracts';
@@ -12,6 +11,7 @@ import { guardAgainstNull, guardAgainstNullOrEmpty } from '../../domain/utils/ar
 import BaseError from '../../domain/errors/BaseError';
 import NotFoundError from '../../application/errors/NotFoundError';
 import { CustomFile } from '../../application/interfaces/fileInterfaces';
+import { logger } from '../../application/config/logging';
 
 const NAMESPACE = 'blob-service';
 
@@ -28,7 +28,7 @@ const uploadFile = async (file: CustomFile, container: string, baseUrl: string):
     try {
         const buffer = await getFileBuffer(file);
         const uploadBlobResponse = await blockBlobClient.upload(buffer, buffer.byteLength);
-        logging.info(NAMESPACE, `Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}`);
+        logger.info(`Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}`, { namespace: NAMESPACE });
     } catch (e) {
         const err = e as Error;
         throw new BlobStorageError(err.message);
@@ -38,25 +38,25 @@ const uploadFile = async (file: CustomFile, container: string, baseUrl: string):
 };
 
 const fetchFile = async (fileName: string, container: string): Promise<FetchFileResponse> => {
-    logging.info(NAMESPACE, `Fetching file ${fileName}.`);
+    logger.info(`Fetching file ${fileName}.`, { namespace: NAMESPACE });
     const blobServiceClient = await getBlobServiceClient();
     const containerClient = blobServiceClient.getContainerClient(container);
     const blobClient = containerClient.getBlockBlobClient(fileName);
     const savePath = path.join(ASSETS_PATH, fileName);
     if (existsSync(savePath)) {
-        logging.info(NAMESPACE, `Returning cached file from ${savePath}.`);
+        logger.info(`Returning cached file from ${savePath}.`, { namespace: NAMESPACE });
         return { filePath: savePath };
     }
     try {
         const downloadResponse = await blobClient.downloadToFile(savePath);
         if (!downloadResponse) {
-            logging.error(NAMESPACE, 'blob is null or undefined');
+            logger.error('blob is null or undefined', { namespace: NAMESPACE });
             throw new BlobStorageError(`Blob response is null or undefined`);
         }
         return { filePath: savePath };
     } catch (e: unknown) {
         const err = e as BaseError;
-        logging.error(NAMESPACE, err.message);
+        logger.error(err.message, { namespace: NAMESPACE });
         if (err.statusCode === 404) throw new NotFoundError('Cannot find song with that id.');
         throw new BlobStorageError(err.message);
     }
@@ -65,21 +65,21 @@ const fetchFile = async (fileName: string, container: string): Promise<FetchFile
 const persistPhotoSubmission = async (image: CustomFile): Promise<UploadFileResponse> => {
     guardAgainstNull(image, 'image');
     const config = await asyncConfig;
-    logging.info(NAMESPACE, `Uploading album art. FileName: ${image.name}`);
+    logger.info(`Uploading album art. FileName: ${image.name}`, { namespace: NAMESPACE });
     return await uploadFile(image, config.blob.photoSubmissionContainer, config.blob.photoSubmissionUrl);
 };
 
 const persistSongSubmission = async (song: CustomFile): Promise<UploadFileResponse> => {
     guardAgainstNull(song, 'song');
     const config = await asyncConfig;
-    logging.info(NAMESPACE, `Uploading song. Filename: ${song.name}`);
+    logger.info(`Uploading song. Filename: ${song.name}`, { namespace: NAMESPACE });
     return await uploadFile(song, config.blob.musicSubmissionContainer, config.blob.musicSubmissionUrl);
 };
 
 const fetchMp3File = async (songId: string): Promise<FetchFileResponse> => {
     guardAgainstNullOrEmpty(songId, 'songId');
     const config = await asyncConfig;
-    logging.info(NAMESPACE, `Fetching mp3 file. songId: ${songId}`);
+    logger.info(`Fetching mp3 file. songId: ${songId}`, { namespace: NAMESPACE });
     const mp3FileName = songId.trim() + '.mp3';
     return await fetchFile(mp3FileName, config.blob.mp3Container);
 };
@@ -87,7 +87,7 @@ const fetchMp3File = async (songId: string): Promise<FetchFileResponse> => {
 const fetchWebmFile = async (songId: string): Promise<FetchFileResponse> => {
     guardAgainstNullOrEmpty(songId, 'songId');
     const config = await asyncConfig;
-    logging.info(NAMESPACE, `Fetching webm file. songId: ${songId}`);
+    logger.info(`Fetching webm file. songId: ${songId}`, { namespace: NAMESPACE });
     const webmFileName = songId.trim() + '.webm';
     return await fetchFile(webmFileName, config.blob.webmContainer);
 };
