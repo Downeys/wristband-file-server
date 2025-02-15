@@ -1,8 +1,8 @@
 import { getMockReq, getMockRes } from '@jest-mock/express';
-import globalErrorHandler from './errorController';
-import ValidationError from '../../application/errors/ValidationError';
-import ArgumentError from '../../domain/errors/ArgumentError';
-import { INTERNAL_SERVER_ERROR } from '../../infrastructure/constants/exceptionMessages';
+import globalErrorHandler from './errorHandler';
+import ValidationError from '../../../application/errors/ValidationError';
+import ArgumentError from '../../../domain/errors/ArgumentError';
+import { INTERNAL_SERVER_ERROR } from '../../../infrastructure/constants/exceptionMessages';
 
 describe('Error controller tests', () => {
   it('should return error status code and message for operational errors', async () => {

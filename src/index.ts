@@ -4,40 +4,29 @@ import healthCheckRoutes from './healthCheck/presentation/routes/healthCheckRout
 import submissionRoutes from './submissions/presentation/routes/musicSubmissionRoutes';
 import streamingRoutes from './streaming/presentation/routes/audioStreamingRoutes';
 import NotFoundError from './common/application/errors/NotFoundError';
-import globalErrorHandler from './common/presentation/controllers/errorController';
+import globalErrorHandler from './common/presentation/middleware/errorHandling/errorHandler';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './common/presentation/config/swagger';
 import { logger } from './common/application/config/logging';
-
-const NAMESPACE = 'index';
+import { metricsEndpoint, metricsMiddleware } from './common/presentation/middleware/monitoring/prometheus';
+import { requestLogger } from './common/presentation/middleware/logging/requestLogger';
+import { expressMiddleware } from 'zipkin-instrumentation-express';
+import { zipkinTracer } from './common/presentation/middleware/monitoring/traces';
 
 const app = express();
 
 // logging
-app.use((req, res, next) => {
-  if (!req.url.match('/healthcheck')) {
-    const loggingContext = {
-      namespace: NAMESPACE,
-      method: req.method,
-      url: req.url,
-      ip: req.socket.remoteAddress,
-    };
-    logger.debug('received request', loggingContext);
+app.use(requestLogger);
 
-    res.on('finish', () => {
-      logger.info(NAMESPACE, 'produced response', {
-        ...loggingContext,
-        status: res.statusCode,
-      });
-    });
-  }
-
-  next();
-});
+// tracing
+app.use(expressMiddleware({ tracer: zipkinTracer }));
 
 // parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// custom metric middleware
+app.use(metricsMiddleware);
 
 // routes
 app.use('/healthcheck', healthCheckRoutes);
@@ -46,6 +35,9 @@ app.use('/audio-stream', streamingRoutes);
 
 // swagger
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// for prometheus scraping
+app.use('/metrics', metricsEndpoint);
 
 app.all('*', (req, res, next) => {
   const error = new NotFoundError(`${req.originalUrl} is not a valid url. It does not exist.`);

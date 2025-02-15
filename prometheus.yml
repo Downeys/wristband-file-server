@@ -1,0 +1,14 @@
+# Configuration for scraping metrics from different targets
+scrape_configs:
+  # Job for collecting metrics from Next.js application
+  - job_name: 'next-frontend'
+    static_configs:
+      - targets: ['host.docker.internal:3000']
+    # Path where metrics endpoint is exposed in the Next.js app
+    metrics_path: '/api/metrics'
+  # job for collecting metrics fro Nodejs backend
+  - job_name: 'node-backend'
+    scrape_interval: 5s
+    # Static list of target endpoints to scrape
+    static_configs:
+      - targets: ['host.docker.internal:8080']
