@@ -6,7 +6,7 @@ import { Tracer } from 'zipkin';
 const debug = 'undefined' !== typeof window ? window.location.search.indexOf('debug') !== -1 : process.env.DEBUG;
 
 // Send spans to Zipkin asynchronously over HTTP
-const zipkinBaseUrl = 'http://localhost:9411';
+const zipkinBaseUrl = process.env.ZIPKIN_HOST ?? 'http://localhost:9411';
 
 const httpLogger = new HttpLogger({
   endpoint: `${zipkinBaseUrl}/api/v2/spans`,

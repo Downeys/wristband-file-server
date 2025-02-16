@@ -12,7 +12,7 @@ export const logger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
     new LokiTransport({
-      host: 'http://127.0.0.1:3100',
+      host: process.env.LOKI_HOST ?? 'http://127.0.0.1:3100',
       json: true,
       labels: { service: 'node-backend' },
       onConnectionError: (err) => console.error('Loki connection error.', err),
