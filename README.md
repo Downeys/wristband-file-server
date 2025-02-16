@@ -84,6 +84,62 @@ I have made my current dev environment public to make it easier for potential em
 
 Please refer to the openApi documentation for usage details. You can find this by running the backend application using the instructions described above, and then navigating to [http://localhost:8080/docs](http://localhost:8080/docs).
 
+## Observability
+
+This project utilizes Otel, Prometheus, Loki, Zipkin, and Grafana to collect and visualize logs, metrics, and traces. This is an initial setup which still has a lot of room for improvement, but it allows immediate insights into the project.
+
+### View Logs
+
+After spinning up the application using the steps described above, you will be able to use Grafana to check the logs of both frontend and backend apps.
+
+1. Navigate to localhost:3001
+2. Click 'Data sources' in the left navigation panel under 'Connections'
+3. Click 'Add Data Source' button
+4. Select Loki
+5. On the next screen, in the Connection tab, 'URL' should be automatically selected from the dropdown. Use 'http://loki:3100' as the value.
+6. Click 'Save & test' at the very bottom
+7. Next, click 'Dashboards' in the left navigation panel
+8. Click the '+ Create Dashboard' button
+9. Click the '+ Add Visualization' button and select Loki
+
+... This is where it gets complicated. Would be easier if you're familiar with Grafana. Will do my best to enumerate the steps below though.
+
+10. Just below the 'Save dashboard' button on the right, there's a dropdown. Click it, scroll down, and select 'Logs'
+11. In the bottom middle pane, you should see the 'Queries' tab selected automatically
+12. Under that tab, find the label filters section. In the left dropdown select 'Sevice' and in the right dropdown select 'node-backend'
+13. Click the blue 'Run query' button
+14. Click the blue 'Save dashboard' button
+15. Enter a title you'll remember like backend-logs
+16. Repeat steps 11-15 but select 'next-frontend' service name in step 12 and give it a title like frontend-logs.
+
+### View Metrics
+
+After spinning up the application using the steps described above, you will be able to use Grafana to check the metrics of both frontend and backend apps.
+
+1. Navigate to localhost:3001
+2. Click 'Data sources' in the left navigation panel under 'Connections'
+3. Click 'Add Data Source' button
+4. Select Prometheus
+5. On the next screen, in the Connection tab, 'URL' should be automatically selected from the dropdown. Use 'http://prometheus:9090' as the value.
+6. Click 'Save & test' at the very bottom
+7. Next, click 'Dashboards' in the left navigation panel
+8. Click the '+ Create Dashboard' button
+9. Click the 'Import Dashboard' button in the bottom right
+10. Enter '11159' and click the blue 'Load' button
+11. Provide the dashboard with a name you'll remember like backend-metrics.
+12. At the bottom, select Prometheus in the dropdown labled 'prometheus'
+13. Click the blue 'Import' button at the bottom
+
+### View Traces
+
+After spinning up the application using the steps described above, you will be able to use Zipkin to check the traces of both frontend and backend apps.
+
+1. Navigate to localhost:9411
+2. Click the red '+' button
+3. Select 'Service' filter and the service you want to trace.
+
+NOTE: Tracing is only working for the frontend app when it is run locally from the console. Still dialing in the networking between frontend/otel/zipkin when using docker compose up option.
+
 ## Unit tests
 
 All major functionality in this project is unit tested. Integration tests haven't been added yet. Currently the project boasts over 100 unit tests and over 95% unit test code coverage - details below.
