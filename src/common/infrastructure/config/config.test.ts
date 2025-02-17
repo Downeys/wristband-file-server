@@ -1,4 +1,4 @@
-import { getSanatizedConfig, RawSecrets } from './config';
+import { getSanitizedConfig, RawSecrets } from './config';
 
 const mockSecrets: RawSecrets = {
   BLOB_CONNECTION_STRING: 'test blob connection',
@@ -51,11 +51,11 @@ jest.mock('@azure/keyvault-secrets', () => ({
   })),
 }));
 
-describe('Config tests: tests env variable typescript-santization module', () => {
+describe('Config tests: tests env variable typescript-sanitization module', () => {
   it('should successfully return config when all env variables are provided', async () => {
     // Arrange
     // Act
-    const config = await getSanatizedConfig();
+    const config = await getSanitizedConfig();
 
     // Assert
     expect(config.blob.connectionString).toBe(mockSecrets.BLOB_CONNECTION_STRING);

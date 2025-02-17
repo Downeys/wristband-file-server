@@ -52,7 +52,7 @@ const getSecrets = async (): Promise<RawSecrets> => {
   return secrets as unknown as RawSecrets;
 };
 
-export const getSanatizedConfig = async (): Promise<Config> => {
+export const getSanitizedConfig = async (): Promise<Config> => {
   const secrets = await getSecrets();
 
   for (const [key, value] of Object.entries(secrets)) {
@@ -81,4 +81,4 @@ export const getSanatizedConfig = async (): Promise<Config> => {
   };
 };
 
-export default getSanatizedConfig();
+export default getSanitizedConfig();

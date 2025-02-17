@@ -19,7 +19,7 @@ const envVars: RawEnvVars = {
   port: process.env.PORT,
 };
 
-export const getSanatizedConfig = (c: RawEnvVars): Config => {
+export const getSanitizedConfig = (c: RawEnvVars): Config => {
   for (const [key, value] of Object.entries(c)) {
     if (value === undefined) {
       throw new Error(`Missing key ${key} in config.env`);
@@ -35,4 +35,4 @@ export const getSanatizedConfig = (c: RawEnvVars): Config => {
   };
 };
 
-export default getSanatizedConfig(envVars);
+export default getSanitizedConfig(envVars);
