@@ -12,7 +12,7 @@ describe('Tests for all MusicSubmissionForm specifications', () => {
     // Assert
     expect(result).toBe(true);
   });
-  it('should return false if contact name has nubmers in it', () => {
+  it('should return false if contact name has numbers in it', () => {
     // Arrange
     const entity = new MusicSubmissionForm('testBandName', 'testContactName2345', 'test@email.com', '111-555-9999', true);
 

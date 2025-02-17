@@ -13,8 +13,8 @@ describe('Audio streaming service test', () => {
     // Arrange
     const songId = 'testSongId';
     const rangeHeader = '1500';
-    const mockFecthMp3File = jest.fn().mockImplementation(() => ({ filePath: 'testMp3Path' }));
-    blobService.blobFetchingService.fetchMp3File = mockFecthMp3File;
+    const mockFetchMp3File = jest.fn().mockImplementation(() => ({ filePath: 'testMp3Path' }));
+    blobService.blobFetchingService.fetchMp3File = mockFetchMp3File;
 
     // Act
     const result = await audioStreamingService.streamMp3File(songId, rangeHeader);
@@ -28,10 +28,10 @@ describe('Audio streaming service test', () => {
     // Arrange
     const songId = 'badTestSongId';
     const rangeHeader = '1500';
-    const mockFecthMp3File = jest.fn().mockImplementation(() => {
+    const mockFetchMp3File = jest.fn().mockImplementation(() => {
       throw Error('this is a mock failure');
     });
-    blobService.blobFetchingService.fetchMp3File = mockFecthMp3File;
+    blobService.blobFetchingService.fetchMp3File = mockFetchMp3File;
 
     // Act
     // Assert
@@ -42,10 +42,10 @@ describe('Audio streaming service test', () => {
     // Arrange
     const songId = null;
     const rangeHeader = '1500';
-    const mockFecthMp3File = jest.fn().mockImplementation(() => {
+    const mockFetchMp3File = jest.fn().mockImplementation(() => {
       throw Error('this is a mock failure');
     });
-    blobService.blobFetchingService.fetchMp3File = mockFecthMp3File;
+    blobService.blobFetchingService.fetchMp3File = mockFetchMp3File;
 
     // Act
     // Assert
@@ -56,10 +56,10 @@ describe('Audio streaming service test', () => {
     // Arrange
     const songId = '';
     const rangeHeader = '1500';
-    const mockFecthMp3File = jest.fn().mockImplementation(() => {
+    const mockFetchMp3File = jest.fn().mockImplementation(() => {
       throw Error('this is a mock failure');
     });
-    blobService.blobFetchingService.fetchMp3File = mockFecthMp3File;
+    blobService.blobFetchingService.fetchMp3File = mockFetchMp3File;
 
     // Act
     // Assert
@@ -70,8 +70,8 @@ describe('Audio streaming service test', () => {
     // Arrange
     const songId = 'testSongId';
     const rangeHeader = '1500';
-    const mockFecthWebmFile = jest.fn().mockImplementation(() => ({ filePath: 'testWebmPath' }));
-    blobService.blobFetchingService.fetchWebmFile = mockFecthWebmFile;
+    const mockFetchWebmFile = jest.fn().mockImplementation(() => ({ filePath: 'testWebmPath' }));
+    blobService.blobFetchingService.fetchWebmFile = mockFetchWebmFile;
 
     // Act
     const result = await audioStreamingService.streamWebmFile(songId, rangeHeader);
@@ -85,10 +85,10 @@ describe('Audio streaming service test', () => {
     // Arrange
     const songId = 'badTestSongId';
     const rangeHeader = '1500';
-    const mockFecthWebmFile = jest.fn().mockImplementation(() => {
+    const mockFetchWebmFile = jest.fn().mockImplementation(() => {
       throw Error('this is a mock failure');
     });
-    blobService.blobFetchingService.fetchWebmFile = mockFecthWebmFile;
+    blobService.blobFetchingService.fetchWebmFile = mockFetchWebmFile;
 
     // Act
     // Assert
@@ -99,10 +99,10 @@ describe('Audio streaming service test', () => {
     // Arrange
     const songId = null;
     const rangeHeader = '1500';
-    const mockFecthWebmFile = jest.fn().mockImplementation(() => {
+    const mockFetchWebmFile = jest.fn().mockImplementation(() => {
       throw Error('this is a mock failure');
     });
-    blobService.blobFetchingService.fetchWebmFile = mockFecthWebmFile;
+    blobService.blobFetchingService.fetchWebmFile = mockFetchWebmFile;
 
     // Act
     // Assert
@@ -113,10 +113,10 @@ describe('Audio streaming service test', () => {
     // Arrange
     const songId = '';
     const rangeHeader = '1500';
-    const mockFecthWebmFile = jest.fn().mockImplementation(() => {
+    const mockFetchWebmFile = jest.fn().mockImplementation(() => {
       throw Error('this is a mock failure');
     });
-    blobService.blobFetchingService.fetchWebmFile = mockFecthWebmFile;
+    blobService.blobFetchingService.fetchWebmFile = mockFetchWebmFile;
 
     // Act
     // Assert

@@ -1,6 +1,6 @@
-import { getSanatizedConfig, RawEnvVars } from './config';
+import { getSanitizedConfig, RawEnvVars } from './config';
 
-describe('Config tests: tests env variable typescript-santization module', () => {
+describe('Config tests: tests env variable typescript-sanitization module', () => {
   it('should successfully return config when all env variables are provided', async () => {
     // Arrange
     const envVars: RawEnvVars = {
@@ -8,7 +8,7 @@ describe('Config tests: tests env variable typescript-santization module', () =>
     };
 
     // Act
-    const config = getSanatizedConfig(envVars);
+    const config = getSanitizedConfig(envVars);
 
     // Assert
     expect(`${config.server.port}`).toBe(envVars.port);
@@ -21,6 +21,6 @@ describe('Config tests: tests env variable typescript-santization module', () =>
 
     // Act
     // Assert
-    expect(() => getSanatizedConfig(envVars)).toThrow('Missing key port in config.env');
+    expect(() => getSanitizedConfig(envVars)).toThrow('Missing key port in config.env');
   });
 });
