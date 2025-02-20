@@ -11,6 +11,6 @@ const ping = async (req: Request, res: Response, next: NextFunction): Promise<vo
 };
 
 export const audioStreamingController: HealthCheckController = {
-  ping: ping,
+  ping,
 };
 export default audioStreamingController;

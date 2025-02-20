@@ -13,7 +13,6 @@ const connection: ConnectionProps = { isConnected: false };
 export const connectToDb = async () => {
   try {
     if (connection.isConnected) {
-      // logger.info('Using existing db connection.', { namespace: NAMESPACE });
       return;
     }
     const config = await asyncConfig;

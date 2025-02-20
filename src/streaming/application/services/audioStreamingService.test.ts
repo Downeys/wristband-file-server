@@ -63,7 +63,7 @@ describe('Audio streaming service test', () => {
 
     // Act
     // Assert
-    expect(async () => await audioStreamingService.streamMp3File(songId!, rangeHeader)).rejects.toThrow('songId cannot be empty.');
+    expect(async () => await audioStreamingService.streamMp3File(songId, rangeHeader)).rejects.toThrow('songId cannot be empty.');
   });
 
   it('should return headers and readstream on successful webm call', async () => {
@@ -109,7 +109,7 @@ describe('Audio streaming service test', () => {
     expect(async () => await audioStreamingService.streamWebmFile(songId!, rangeHeader)).rejects.toThrow('songId cannot be null or undefined.');
   });
 
-  it('should throw exception if file name input is an empmty string', async () => {
+  it('should throw exception if file name input is an empty string', async () => {
     // Arrange
     const songId = '';
     const rangeHeader = '1500';
@@ -120,6 +120,6 @@ describe('Audio streaming service test', () => {
 
     // Act
     // Assert
-    expect(async () => await audioStreamingService.streamWebmFile(songId!, rangeHeader)).rejects.toThrow('songId cannot be empty.');
+    expect(async () => await audioStreamingService.streamWebmFile(songId, rangeHeader)).rejects.toThrow('songId cannot be empty.');
   });
 });

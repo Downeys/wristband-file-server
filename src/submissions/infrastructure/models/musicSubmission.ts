@@ -25,11 +25,11 @@ const musicSubmissionSchema = new Schema<MusicSubmissionSchema>(
     },
     imageLinks: {
       type: [String],
-      requried: true,
+      required: true,
     },
     audioLinks: {
       type: [String],
-      requried: true,
+      required: true,
     },
   },
   {

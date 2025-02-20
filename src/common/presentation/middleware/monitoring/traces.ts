@@ -20,9 +20,6 @@ function recorder(serviceName: string) {
 function debugRecorder(serviceName: string) {
   const logger: zipkin.Logger = {
     logSpan: (span) => {
-      const json = jsonEncoder.JSON_V2.encode(span);
-      // This is a hack that lets you see the data sent to Zipkin!
-      // console.log(`${serviceName} reporting: ${json}`);
       httpLogger.logSpan(span);
     },
   };
@@ -30,15 +27,6 @@ function debugRecorder(serviceName: string) {
   const batchRecorder = new BatchRecorder({ logger });
 
   return batchRecorder;
-
-  // This is a hack that lets you see which annotations become which spans
-  //   return {
-  //     record: (rec) => {
-  //       const { spanId, traceId } = rec.traceId;
-  //       console.log(`${serviceName} recording: ${traceId}/${spanId} ${rec.annotation.toString()}`);
-  //       batchRecorder.record(rec);
-  //     },
-  //   };
 }
 
 const ctxImpl = new ClsContext('zipkin');

@@ -105,7 +105,7 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
 
       // Act
       // Assert
-      expect(async () => await blobFetchingService.fetchMp3File(testInput!)).rejects.toThrow('songId cannot be empty.');
+      expect(async () => await blobFetchingService.fetchMp3File(testInput)).rejects.toThrow('songId cannot be empty.');
     });
     it('should fetch webm if the file does not already exist in local storage', async () => {
       // Arrange
@@ -153,7 +153,7 @@ describe('blobService tests: tests infra module used to fetch or store blobs', (
 
       // Act
       // Assert
-      expect(async () => await blobFetchingService.fetchWebmFile(testInput!)).rejects.toThrow('songId cannot be empty.');
+      expect(async () => await blobFetchingService.fetchWebmFile(testInput)).rejects.toThrow('songId cannot be empty.');
     });
   });
   describe('blobSubmissionService tests: tests methods used to store blobs', () => {

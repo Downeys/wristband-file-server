@@ -33,7 +33,7 @@ router.get('/mp3/:songId/', audioStreamingController.getMp3AudioStream);
  * /audio-stream/webm/{songId}:
  *   get:
  *     summary: Get webm video stream
- *     desctiption: Fetches chunked video data
+ *     description: Fetches chunked video data
  *     parameters:
  *       - $ref: '#/components/parameters/songIdParam'
  *     responses:

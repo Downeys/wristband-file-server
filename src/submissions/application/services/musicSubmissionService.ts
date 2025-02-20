@@ -37,8 +37,8 @@ export const handleMusicSubmissionUpload = async (
 const saveImages = async (images: CustomFile[]): Promise<string[]> => {
   logger.info(`Saving images count: ${images.length}`, { namespace: NAMESPACE });
   const imageUrls: string[] = [];
-  for (let i = 0; i < images.length; i++) {
-    const { fileUrl } = await blobSubmissionService.persistPhotoSubmission(images[i]);
+  for (const image of images) {
+    const { fileUrl } = await blobSubmissionService.persistPhotoSubmission(image);
     imageUrls.push(fileUrl);
   }
   return imageUrls;
@@ -47,8 +47,8 @@ const saveImages = async (images: CustomFile[]): Promise<string[]> => {
 const saveSongs = async (songs: CustomFile[]): Promise<string[]> => {
   logger.info(`Saving songs count: ${songs.length}`, { namespace: NAMESPACE });
   const songUrls: string[] = [];
-  for (let i = 0; i < songs.length; i++) {
-    const { fileUrl } = await blobSubmissionService.persistSongSubmission(songs[i]);
+  for (const song of songs) {
+    const { fileUrl } = await blobSubmissionService.persistSongSubmission(song);
     songUrls.push(fileUrl);
   }
   return songUrls;
